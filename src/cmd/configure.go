@@ -24,7 +24,7 @@ var configureCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(configureCmd)
 
-	configureCmd.PersistentFlags().StringP("profileName", "u", "", "")
+	configureCmd.PersistentFlags().StringP("profile-Name", "u", "", "")
 	configureCmd.PersistentFlags().StringP("certificate-directory", "u", "", "")
 	configureCmd.PersistentFlags().StringP("private-key-directory", "u", "", "")
 	configureCmd.PersistentFlags().StringP("trust-anchor-arn", "u", "", "")
@@ -38,7 +38,7 @@ func init() {
 	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "profile-arn")
 	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "role-arn")
 
-	CredentialHandler.Configure("dave", "", "", "", "", "", "")
+	CredentialHandler.Configure(rootCmd.PersistentFlags().Lookup("certificate-directory"), rootCmd.PersistentFlags().Lookup("private-key-directory"), rootCmd.PersistentFlags().Lookup("trust-anchor-arn"), rootCmd.PersistentFlags().Lookup("profile-arn"), rootCmd.PersistentFlags().Lookup("role-arn"), rootCmd.PersistentFlags().Lookup("profile-Name"), rootCmd.PersistentFlags().Lookup("region"))
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
