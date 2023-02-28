@@ -14,13 +14,8 @@ import (
 // configureCmd represents the configure command
 var configureCmd = &cobra.Command{
 	Use:   "configure",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Configure your AWS credential file for iam roles",
+	Long:  `Configure your AWS credential file for iam roles using a basic model`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configure called")
 	},
@@ -29,7 +24,21 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(configureCmd)
 
-	CredentialHandler.Configure("dave")
+	configureCmd.PersistentFlags().StringP("profileName", "u", "", "")
+	configureCmd.PersistentFlags().StringP("certificate-directory", "u", "", "")
+	configureCmd.PersistentFlags().StringP("private-key-directory", "u", "", "")
+	configureCmd.PersistentFlags().StringP("trust-anchor-arn", "u", "", "")
+	configureCmd.PersistentFlags().StringP("profile-arn", "u", "", "")
+	configureCmd.PersistentFlags().StringP("role-arn", "u", "", "")
+	configureCmd.PersistentFlags().StringP("region", "u", "", "")
+
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "certificate-directory")
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "private-key-directory")
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "trust-anchor-arn")
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "profile-arn")
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), "role-arn")
+
+	CredentialHandler.Configure("dave", "", "", "", "", "", "")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
