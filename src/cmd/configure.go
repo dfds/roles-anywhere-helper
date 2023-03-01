@@ -24,13 +24,13 @@ var configureCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(configureCmd)
 
-	configureCmd.PersistentFlags().StringP(Flags.ProfileName, "u", "", "")
-	configureCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "u", "", "")
-	configureCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "u", "", "")
-	configureCmd.PersistentFlags().StringP(Flags.TrustAnchor, "u", "", "")
-	configureCmd.PersistentFlags().StringP(Flags.ProfileArn, "u", "", "")
-	configureCmd.PersistentFlags().StringP(Flags.RoleArn, "u", "", "")
-	configureCmd.PersistentFlags().StringP(Flags.Region, "u", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.ProfileName, "n", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.TrustAnchor, "t", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.ProfileArn, "p", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.RoleArn, "i", "", "")
+	configureCmd.PersistentFlags().StringP(Flags.Region, "r", "", "")
 
 	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.CertificateDirectory)
 	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.PrivateKeyDirectory)
