@@ -3,10 +3,12 @@ package CredentialHandler
 import (
 	"fmt"
 
+	"go-aws-iam-roles-anywhere-credential-helper/Flags"
 	"go-aws-iam-roles-anywhere-credential-helper/ProfileHandler"
 
 	"os"
 
+	"github.com/spf13/cobra"
 	"gopkg.in/ini.v1"
 )
 
@@ -23,7 +25,15 @@ func GetCredentialsFilePath() string {
 	return homeDir + "/.aws/credentials"
 }
 
-func Configure(profileName string, certificateDirectory string, privateKeyDirectory string, trustAnchorArn string, profileArn string, roleArn string, region string) {
+func Configure(cmd *cobra.Command, args []string) {
+	profileName, _ := cmd.Flags().GetString(Flags.ProfileName)
+	certificateDirectory, _ := cmd.Flags().GetString(Flags.CertificateDirectory)
+	privateKeyDirectory, _ := cmd.Flags().GetString(Flags.PrivateKeyDirectory)
+	trustAnchorArn, _ := cmd.Flags().GetString(Flags.TrustAnchor)
+	profileArn, _ := cmd.Flags().GetString(Flags.ProfileArn)
+	roleArn, _ := cmd.Flags().GetString(Flags.RoleArn)
+	region, _ := cmd.Flags().GetString(Flags.Region)
+
 	file, err := createCredentialsFile(GetCredentialsFilePath()+"/.aws", "credentials")
 
 	if err != nil {
