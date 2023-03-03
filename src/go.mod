@@ -1,4 +1,4 @@
-module go-aws-iam-roles-anywhere-credential-helper
+module iam-anywhere-ninja
 
 go 1.18
 

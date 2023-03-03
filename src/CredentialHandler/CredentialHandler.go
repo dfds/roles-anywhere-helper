@@ -3,8 +3,8 @@ package CredentialHandler
 import (
 	"fmt"
 
-	"go-aws-iam-roles-anywhere-credential-helper/Flags"
-	"go-aws-iam-roles-anywhere-credential-helper/ProfileHandler"
+	"iam-anywhere-ninja/Flags"
+	"iam-anywhere-ninja/ProfileHandler"
 
 	"os"
 
@@ -37,7 +37,7 @@ func Configure(cmd *cobra.Command, args []string) {
 	file, err := createCredentialsFile(GetCredentialsFilePath())
 	defer file.Close()
 	if err != nil {
-		fmt.Println("Error writing credential file:", err)
+		fmt.Println("Credential file already exisits:", err)
 	} else {
 		fmt.Println("Credential file written successfully!")
 	}

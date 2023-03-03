@@ -1,0 +1,22 @@
+project_name: iam-anywhere-ninja
+builds:
+  - env: [ ]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    id: "iam-anywhere-ninja"
+    dir: .
+    main: ./cmd
+
+release:
+  draft: true
+
+changelog:
+  skip: false
+
+  use: git
+  sort: asc

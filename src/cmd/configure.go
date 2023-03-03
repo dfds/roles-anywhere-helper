@@ -1,17 +1,12 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
-	"go-aws-iam-roles-anywhere-credential-helper/CredentialHandler"
-	"go-aws-iam-roles-anywhere-credential-helper/Flags"
+	"iam-anywhere-ninja/CredentialHandler"
+	"iam-anywhere-ninja/Flags"
 
 	"github.com/spf13/cobra"
 )
 
-// configureCmd represents the configure command
 var configureCmd = &cobra.Command{
 	Use:   "configure",
 	Short: "Configure your AWS credential file for iam roles",
