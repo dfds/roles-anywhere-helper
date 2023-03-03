@@ -1,6 +1,6 @@
 package main
 
-import "iam-anywhere-ninja/cmd"
+import "github.com/dfds/iam-anywhere-ninja/cmd"
 
 func main() {
 	cmd.Execute()

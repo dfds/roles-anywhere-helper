@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"iam-anywhere-ninja/CredentialHandler"
-	"iam-anywhere-ninja/Flags"
+	"github.com/dfds/iam-anywhere-ninja/CredentialHandler"
+	"github.com/dfds/iam-anywhere-ninja/Flags"
 
 	"github.com/spf13/cobra"
 )

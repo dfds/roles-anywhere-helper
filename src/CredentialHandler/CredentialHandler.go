@@ -3,8 +3,8 @@ package CredentialHandler
 import (
 	"fmt"
 
-	"iam-anywhere-ninja/Flags"
-	"iam-anywhere-ninja/ProfileHandler"
+	"github.com/dfds/iam-anywhere-ninja/Flags"
+	"github.com/dfds/iam-anywhere-ninja/ProfileHandler"
 
 	"os"
 
