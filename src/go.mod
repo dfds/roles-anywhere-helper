@@ -1,4 +1,4 @@
-module iam-anywhere-ninja
+module github.com/dfds/iam-anywhere-ninja
 
 go 1.18
 
