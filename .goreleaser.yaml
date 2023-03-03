@@ -9,7 +9,7 @@ builds:
       - amd64
       - arm64
     id: "iam-anywhere-ninja"
-    dir: .
+    dir: ./src
     main: ./
 
 release:
