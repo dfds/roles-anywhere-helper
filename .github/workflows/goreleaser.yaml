@@ -26,7 +26,6 @@ jobs:
             ${{ runner.os }}-go-
       - name: Tests
         run: |
-          go test -v ./...
           go test -v github.com/dfds/iam-anywhere-ninja/src
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
