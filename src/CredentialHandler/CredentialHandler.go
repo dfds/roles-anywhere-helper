@@ -73,7 +73,6 @@ func createCredentialsFile(filePath string) (*os.File, error) {
 }
 
 func writeIniFile(template *CredentialsFileTemplate, profile string) {
-	fmt.Println("writeIniFile")
 	cfg, err := ini.Load(CredentialsFilePath)
 	check(err)
 	recreateSection(template, profile, cfg)
@@ -81,7 +80,6 @@ func writeIniFile(template *CredentialsFileTemplate, profile string) {
 }
 
 func recreateSection(template *CredentialsFileTemplate, profile string, cfg *ini.File) {
-	fmt.Println("recreateSection")
 	cfg.DeleteSection(profile)
 	sec, err := cfg.NewSection(profile)
 	check(err)
