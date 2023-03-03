@@ -37,7 +37,7 @@ func Configure(cmd *cobra.Command, args []string) {
 	file, err := createCredentialsFile(GetCredentialsFilePath())
 	defer file.Close()
 	if err != nil {
-		fmt.Println("Credential file already exisits:", err)
+		fmt.Println("Credential file already exists:", err)
 	} else {
 		fmt.Println("Credential file written successfully!")
 	}

@@ -10,7 +10,7 @@ builds:
       - arm64
     id: "iam-anywhere-ninja"
     dir: .
-    main: ./cmd
+    main: ./
 
 release:
   draft: true
