@@ -19,12 +19,6 @@ type CredentialsFileTemplate struct {
 	Region            string `ini:"region,omitempty"`
 }
 
-func GetCredentialsFilePath() string {
-	homeDir, err := os.UserHomeDir()
-	check(err)
-	return homeDir + "/.aws/credentials"
-}
-
 func Configure(cmd *cobra.Command, args []string) {
 	profileName, _ := cmd.Flags().GetString(Flags.ProfileName)
 	certificateDirectory, _ := cmd.Flags().GetString(Flags.CertificateDirectory)
@@ -34,8 +28,9 @@ func Configure(cmd *cobra.Command, args []string) {
 	roleArn, _ := cmd.Flags().GetString(Flags.RoleArn)
 	region, _ := cmd.Flags().GetString(Flags.Region)
 
-	file, err := createCredentialsFile(GetCredentialsFilePath())
+	file, err := CreateCredentialsFile(GetCredentialsFilePath())
 	defer file.Close()
+
 	if err != nil {
 		fmt.Println("Credential file already exists:", err)
 	} else {
@@ -45,8 +40,13 @@ func Configure(cmd *cobra.Command, args []string) {
 	profileName = ProfileHandler.SetProfileName(profileName)
 	fmt.Printf("Profile Name set to %s", profileName)
 	profileTemplate := ProcessCredentialProcessTemplate(certificateDirectory, privateKeyDirectory, trustAnchorArn, profileArn, roleArn, region)
-	writeIniFile(&profileTemplate, profileName)
+	WriteIniFile(&profileTemplate, profileName)
+}
 
+func GetCredentialsFilePath() string {
+	homeDir, err := os.UserHomeDir()
+	Check(err)
+	return homeDir + "/.aws/credentials"
 }
 
 func ProcessCredentialProcessTemplate(certificateDirectory string, privateKeyDirectory string, trustAnchorArn string, profileArn string, roleArn string, region string) CredentialsFileTemplate {
@@ -59,7 +59,7 @@ func ProcessCredentialProcessTemplate(certificateDirectory string, privateKeyDir
 	return profileTemplate
 }
 
-func createCredentialsFile(filePath string) (*os.File, error) {
+func CreateCredentialsFile(filePath string) (*os.File, error) {
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		os.MkdirAll(filePath, 0755)
 	}
@@ -72,22 +72,22 @@ func createCredentialsFile(filePath string) (*os.File, error) {
 	return os.Create(filePath)
 }
 
-func writeIniFile(template *CredentialsFileTemplate, profile string) {
+func WriteIniFile(template *CredentialsFileTemplate, profile string) {
 	cfg, err := ini.Load(CredentialsFilePath)
-	check(err)
-	recreateSection(template, profile, cfg)
+	Check(err)
+	RecreateSection(template, profile, cfg)
 	cfg.SaveTo(CredentialsFilePath)
 }
 
-func recreateSection(template *CredentialsFileTemplate, profile string, cfg *ini.File) {
+func RecreateSection(template *CredentialsFileTemplate, profile string, cfg *ini.File) {
 	cfg.DeleteSection(profile)
 	sec, err := cfg.NewSection(profile)
-	check(err)
+	Check(err)
 	err = sec.ReflectFrom(template)
-	check(err)
+	Check(err)
 }
 
-func check(err error) {
+func Check(err error) {
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
