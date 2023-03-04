@@ -1,4 +1,4 @@
-package Flags
+package flags
 
 const ProfileName string = "profile-name"
 const CertificateDirectory string = "certificate-directory"

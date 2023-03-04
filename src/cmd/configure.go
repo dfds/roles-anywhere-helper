@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/dfds/iam-anywhere-ninja/CredentialHandler"
-	"github.com/dfds/iam-anywhere-ninja/Flags"
+	"github.com/dfds/iam-anywhere-ninja/credentialHandler"
+	"github.com/dfds/iam-anywhere-ninja/flags"
 
 	"github.com/spf13/cobra"
 )
@@ -12,25 +12,25 @@ var configureCmd = &cobra.Command{
 	Short: "Configure your AWS credential file for iam roles",
 	Long:  `Configure your AWS credential file for iam roles using a basic model`,
 	Run: func(cmd *cobra.Command, args []string) {
-		CredentialHandler.Configure(cmd, args)
+		credentialHandler.Configure(cmd, args)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(configureCmd)
 
-	configureCmd.PersistentFlags().StringP(Flags.ProfileName, "n", "default", "Name of the profile to that the credentials will be created under")
-	configureCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Directory of the Certificate on the machine")
-	configureCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Directory of the unincrypted private key on the machine")
-	configureCmd.PersistentFlags().StringP(Flags.TrustAnchor, "t", "", "The Arn of the AWS IAM roles anywhere trust anchor")
-	configureCmd.PersistentFlags().StringP(Flags.ProfileArn, "p", "", "The Arn of the AWS IAM roles Anywhere profile")
-	configureCmd.PersistentFlags().StringP(Flags.RoleArn, "i", "", "The Arn of the role to be assumed with AWS IAM roles Anywhere")
-	configureCmd.PersistentFlags().StringP(Flags.Region, "r", "us-east-1", "The region for the credential profile")
+	configureCmd.PersistentFlags().StringP(flags.ProfileName, "n", "default", "Name of the profile to that the credentials will be created under")
+	configureCmd.PersistentFlags().StringP(flags.CertificateDirectory, "x", "", "Directory of the Certificate on the machine")
+	configureCmd.PersistentFlags().StringP(flags.PrivateKeyDirectory, "k", "", "Directory of the unincrypted private key on the machine")
+	configureCmd.PersistentFlags().StringP(flags.TrustAnchor, "t", "", "The Arn of the AWS IAM roles anywhere trust anchor")
+	configureCmd.PersistentFlags().StringP(flags.ProfileArn, "p", "", "The Arn of the AWS IAM roles Anywhere profile")
+	configureCmd.PersistentFlags().StringP(flags.RoleArn, "i", "", "The Arn of the role to be assumed with AWS IAM roles Anywhere")
+	configureCmd.PersistentFlags().StringP(flags.Region, "r", "us-east-1", "The region for the credential profile")
 
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.CertificateDirectory)
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.PrivateKeyDirectory)
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.TrustAnchor)
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.ProfileArn)
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.RoleArn)
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.Region)
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.CertificateDirectory)
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.PrivateKeyDirectory)
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.TrustAnchor)
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.ProfileArn)
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.RoleArn)
+	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.Region)
 }

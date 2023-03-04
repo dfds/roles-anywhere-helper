@@ -7,14 +7,14 @@ import (
 	"encoding/pem"
 	"os"
 
-	"github.com/dfds/iam-anywhere-ninja/Flags"
+	"github.com/dfds/iam-anywhere-ninja/flags"
 	"github.com/spf13/cobra"
 )
 
 func Generate(cmd *cobra.Command, args []string) {
 
-	certificateDirectory, _ := cmd.Flags().GetString(Flags.CertificateDirectory)
-	privateKeyDirectory, _ := cmd.Flags().GetString(Flags.PrivateKeyDirectory)
+	certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
+	privateKeyDirectory, _ := cmd.Flags().GetString(flags.PrivateKeyDirectory)
 
 	// Generate a 2048-bit RSA key pair
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)

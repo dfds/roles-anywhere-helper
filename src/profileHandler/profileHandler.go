@@ -1,4 +1,4 @@
-package ProfileHandler
+package profileHandler
 
 import (
 	"fmt"

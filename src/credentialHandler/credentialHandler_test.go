@@ -1,4 +1,4 @@
-package CredentialHandler
+package credentialHandler
 
 import (
 	"os"

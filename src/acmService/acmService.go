@@ -7,14 +7,14 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acm"
-	"github.com/dfds/iam-anywhere-ninja/Flags"
+	"github.com/dfds/iam-anywhere-ninja/flags"
 	"github.com/spf13/cobra"
 )
 
 func ImportCertificate(cmd *cobra.Command, args []string) {
-	profileName, _ := cmd.Flags().GetString(Flags.ProfileName)
-	certificateDirectory, _ := cmd.Flags().GetString(Flags.CertificateDirectory)
-	privateKeyDirectory, _ := cmd.Flags().GetString(Flags.PrivateKeyDirectory)
+	profileName, _ := cmd.Flags().GetString(flags.ProfileName)
+	certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
+	privateKeyDirectory, _ := cmd.Flags().GetString(flags.PrivateKeyDirectory)
 
 	sess, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
