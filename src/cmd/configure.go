@@ -20,8 +20,8 @@ func init() {
 	rootCmd.AddCommand(configureCmd)
 
 	configureCmd.PersistentFlags().StringP(Flags.ProfileName, "n", "default", "Name of the profile to that the credentials will be created under")
-	configureCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Destination of the Certificate on the machine")
-	configureCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Destination of the unincrypted private key on the machine")
+	configureCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Directory of the Certificate on the machine")
+	configureCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Directory of the unincrypted private key on the machine")
 	configureCmd.PersistentFlags().StringP(Flags.TrustAnchor, "t", "", "The Arn of the AWS IAM roles anywhere trust anchor")
 	configureCmd.PersistentFlags().StringP(Flags.ProfileArn, "p", "", "The Arn of the AWS IAM roles Anywhere profile")
 	configureCmd.PersistentFlags().StringP(Flags.RoleArn, "i", "", "The Arn of the role to be assumed with AWS IAM roles Anywhere")

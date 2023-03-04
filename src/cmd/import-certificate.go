@@ -10,7 +10,7 @@ import (
 var importCertificateCmd = &cobra.Command{
 	Use:   "import-certificate",
 	Short: "upload certificate to ACM",
-	Long:  `Adds your certificates to ACM`,
+	Long:  `Adds your certificate to ACM`,
 	Run: func(cmd *cobra.Command, args []string) {
 		acmService.ImportCertificate(cmd, args)
 	},
@@ -20,8 +20,8 @@ func init() {
 	rootCmd.AddCommand(importCertificateCmd)
 
 	importCertificateCmd.PersistentFlags().StringP(Flags.ProfileName, "p", "default", "Name of the profile to be used for access to the ACM")
-	importCertificateCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Destination of the Certificate on the machine")
-	importCertificateCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Destination of the unincrypted private key on the machine")
+	importCertificateCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Directory of the Certificate on the machine")
+	importCertificateCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Directory of the unincrypted private key on the machine")
 
 	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), Flags.CertificateDirectory)
 	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), Flags.PrivateKeyDirectory)
