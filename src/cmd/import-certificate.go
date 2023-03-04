@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configureCmd = &cobra.Command{
+var importCertificateCmd = &cobra.Command{
 	Use:   "import-certificate",
 	Short: "upload certificate to ACM",
 	Long:  `Adds your certificates to ACM`,
@@ -17,12 +17,12 @@ var configureCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(configureCmd)
+	rootCmd.AddCommand(importCertificateCmd)
 
-	configureCmd.PersistentFlags().StringP(Flags.ProfileName, "n", "default", "Name of the profile to be used for access to the ACM")
-	configureCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Destination of the Certificate on the machine")
-	configureCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Destination of the unincrypted private key on the machine")
+	importCertificateCmd.PersistentFlags().StringP(Flags.ProfileName, "p", "default", "Name of the profile to be used for access to the ACM")
+	importCertificateCmd.PersistentFlags().StringP(Flags.CertificateDirectory, "x", "", "Destination of the Certificate on the machine")
+	importCertificateCmd.PersistentFlags().StringP(Flags.PrivateKeyDirectory, "k", "", "Destination of the unincrypted private key on the machine")
 
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.CertificateDirectory)
-	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), Flags.PrivateKeyDirectory)
+	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), Flags.CertificateDirectory)
+	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), Flags.PrivateKeyDirectory)
 }

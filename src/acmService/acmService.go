@@ -2,13 +2,16 @@ package acmService
 
 import (
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
+	"io/ioutil"
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acm"
-	"io/ioutil"
+	"github.com/dfds/iam-anywhere-ninja/Flags"
+	"github.com/spf13/cobra"
 )
 
-func ImportCertificate(cmd *cobra.Command, args []string) (CertificateArn string) {
+func ImportCertificate(cmd *cobra.Command, args []string) {
 	profileName, _ := cmd.Flags().GetString(Flags.ProfileName)
 	certificateDirectory, _ := cmd.Flags().GetString(Flags.CertificateDirectory)
 	privateKeyDirectory, _ := cmd.Flags().GetString(Flags.PrivateKeyDirectory)
@@ -35,14 +38,10 @@ func ImportCertificate(cmd *cobra.Command, args []string) (CertificateArn string
 		panic(err)
 	}
 
-	// Convert the certificate and private key data to strings
-	certString := string(certData)
-	privateKeyString := string(privateKeyData)
-
 	// Import the certificate into ACM
 	input := &acm.ImportCertificateInput{
-		Certificate: &certString,
-		PrivateKey:  &privateKeyString,
+		Certificate: certData,
+		PrivateKey:  privateKeyData,
 	}
 	result, err := svc.ImportCertificate(input)
 	if err != nil {
@@ -50,5 +49,5 @@ func ImportCertificate(cmd *cobra.Command, args []string) (CertificateArn string
 	}
 
 	// Print the ARN of the imported certificate
-	return fmt.Println(*result.CertificateArn)
+	fmt.Println(*result.CertificateArn)
 }
