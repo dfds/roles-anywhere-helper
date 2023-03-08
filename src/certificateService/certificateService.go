@@ -27,7 +27,7 @@ func Generate(cmd *cobra.Command, args []string) {
 		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
 	}
-	privatePemFile, err := os.Create(privateKeyDirectory)
+	privatePemFile, err := os.Create(privateKeyDirectory + "privatekey.pem")
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ func Generate(cmd *cobra.Command, args []string) {
 		Type:  "RSA PUBLIC KEY",
 		Bytes: publicKeyBytes,
 	}
-	publicPemFile, err := os.Create(certificateDirectory)
+	publicPemFile, err := os.Create(certificateDirectory + "certificate.pem")
 	if err != nil {
 		panic(err)
 	}
