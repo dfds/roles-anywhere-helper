@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acm"
 	"github.com/dfds/iam-anywhere-ninja/flags"
@@ -19,6 +20,9 @@ func ImportCertificate(cmd *cobra.Command, args []string) {
 	sess, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 		Profile:           profileName,
+		Config: aws.Config{
+			Region: aws.String("eu-central-1"),
+		},
 	})
 	if err != nil {
 		fmt.Println("error:", err)
