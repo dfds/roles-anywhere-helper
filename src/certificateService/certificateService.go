@@ -24,7 +24,7 @@ func Generate(cmd *cobra.Command, args []string) {
 
 	// Encode the private key to PEM format
 	privateKeyPem := &pem.Block{
-		Type:  "RSA PRIVATE KEY",
+		Type:  "PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
 	}
 	privatePemFile, err := os.Create(privateKeyDirectory + "privatekey.pem")
@@ -41,7 +41,7 @@ func Generate(cmd *cobra.Command, args []string) {
 		panic(err)
 	}
 	publicKeyPem := &pem.Block{
-		Type:  "RSA PUBLIC KEY",
+		Type:  "CERTIFICATE",
 		Bytes: publicKeyBytes,
 	}
 	publicPemFile, err := os.Create(certificateDirectory + "certificate.pem")
