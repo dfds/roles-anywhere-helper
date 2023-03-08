@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acm"
 	"github.com/dfds/iam-anywhere-ninja/flags"
@@ -17,12 +18,9 @@ func ImportCertificate(cmd *cobra.Command, args []string) {
 	certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 	privateKeyDirectory, _ := cmd.Flags().GetString(flags.PrivateKeyDirectory)
 
-	sess, err := session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Profile:           profileName,
-		Config: aws.Config{
-			Region: aws.String("eu-central-1"),
-		},
+	sess, err := session.NewSession(&aws.Config{
+		Region:      aws.String("eu-central-1"),
+		Credentials: credentials.NewSharedCredentials("", profileName),
 	})
 	if err != nil {
 		fmt.Println("error:", err)
