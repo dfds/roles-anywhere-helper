@@ -20,9 +20,7 @@ func init() {
 	rootCmd.AddCommand(importCertificateCmd)
 
 	importCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Name of the profile to be used for access to the ACM")
-	importCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "x", "", "Directory of the Certificate on the machine")
-	importCertificateCmd.PersistentFlags().StringP(flags.PrivateKeyDirectory, "k", "", "Directory of the unincrypted private key on the machine")
+	importCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
 
 	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), flags.CertificateDirectory)
-	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), flags.PrivateKeyDirectory)
 }

@@ -17,3 +17,5 @@ vendor/
 snyk/
 dist/
 .dccache
+*.pem
+*.key
