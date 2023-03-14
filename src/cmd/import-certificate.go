@@ -14,7 +14,8 @@ var importCertificateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
-		acmService.ImportCertificate(profileName, certificateDirectory)
+		certificateArn, _ := cmd.Flags().GetString(flags.CertificateArn)
+		acmService.ImportCertificate(profileName, certificateDirectory, certificateArn)
 	},
 }
 
@@ -23,6 +24,8 @@ func init() {
 
 	importCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Name of the profile to be used for access to the ACM")
 	importCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
+	importCertificateCmd.PersistentFlags().StringP(flags.CertificateArn, "c", "", "Arn of the certificate for import")
 
 	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), flags.CertificateDirectory)
+	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), flags.CertificateArn)
 }
