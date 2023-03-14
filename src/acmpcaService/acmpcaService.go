@@ -16,7 +16,7 @@ import (
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
 )
 
-func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName []string, organizationalUnit []string, certificateDirectory string) string {
+func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName string, organizationalUnit string, certificateDirectory string) string {
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("eu-central-1"),
@@ -30,8 +30,8 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	csrTemplate := x509.CertificateRequest{
 		Subject: pkix.Name{
 			CommonName:         commonName,
-			Organization:       organizationName,
-			OrganizationalUnit: organizationalUnit,
+			Organization:       []string{organizationName},
+			OrganizationalUnit: []string{organizationalUnit},
 		},
 	}
 

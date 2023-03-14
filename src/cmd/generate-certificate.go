@@ -15,8 +15,8 @@ var getCertificateCmd = &cobra.Command{
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		acmpcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
 		commonName, _ := cmd.Flags().GetString(flags.CommonName)
-		organizationName, _ := cmd.Flags().GetStringArray(flags.OrganizationName)
-		organizationalUnit, _ := cmd.Flags().GetStringArray(flags.OrganizationalUnit)
+		organizationName, _ := cmd.Flags().GetString(flags.OrganizationName)
+		organizationalUnit, _ := cmd.Flags().GetString(flags.OrganizationalUnit)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 
 		acmpcaService.ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory)
