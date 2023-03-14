@@ -16,3 +16,6 @@ vendor/
 .vscode
 snyk/
 dist/
+.dccache
+*.pem
+*.key

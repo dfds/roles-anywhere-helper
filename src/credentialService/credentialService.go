@@ -1,14 +1,11 @@
-package CredentialHandler
+package credentialService
 
 import (
 	"fmt"
 
-	"github.com/dfds/iam-anywhere-ninja/Flags"
-	"github.com/dfds/iam-anywhere-ninja/ProfileHandler"
-
 	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/dfds/iam-anywhere-ninja/profileHandler"
 	"gopkg.in/ini.v1"
 )
 
@@ -19,14 +16,7 @@ type CredentialsFileTemplate struct {
 	Region            string `ini:"region,omitempty"`
 }
 
-func Configure(cmd *cobra.Command, args []string) {
-	profileName, _ := cmd.Flags().GetString(Flags.ProfileName)
-	certificateDirectory, _ := cmd.Flags().GetString(Flags.CertificateDirectory)
-	privateKeyDirectory, _ := cmd.Flags().GetString(Flags.PrivateKeyDirectory)
-	trustAnchorArn, _ := cmd.Flags().GetString(Flags.TrustAnchor)
-	profileArn, _ := cmd.Flags().GetString(Flags.ProfileArn)
-	roleArn, _ := cmd.Flags().GetString(Flags.RoleArn)
-	region, _ := cmd.Flags().GetString(Flags.Region)
+func Configure(profileName string, certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) {
 
 	file, err := CreateCredentialsFile(GetCredentialsFilePath())
 	defer file.Close()
@@ -37,9 +27,9 @@ func Configure(cmd *cobra.Command, args []string) {
 		fmt.Println("Credential file written successfully!")
 	}
 
-	profileName = ProfileHandler.SetProfileName(profileName)
+	profileName = profileHandler.SetProfileName(profileName)
 	fmt.Printf("Profile Name set to %s", profileName)
-	profileTemplate := ProcessCredentialProcessTemplate(certificateDirectory, privateKeyDirectory, trustAnchorArn, profileArn, roleArn, region)
+	profileTemplate := ProcessCredentialProcessTemplate(certificatePath, privateKeyPath, trustAnchorArn, profileArn, roleArn, region)
 	WriteIniFile(&profileTemplate, profileName)
 }
 
@@ -49,9 +39,9 @@ func GetCredentialsFilePath() string {
 	return homeDir + "/.aws/credentials"
 }
 
-func ProcessCredentialProcessTemplate(certificateDirectory string, privateKeyDirectory string, trustAnchorArn string, profileArn string, roleArn string, region string) CredentialsFileTemplate {
+func ProcessCredentialProcessTemplate(certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) CredentialsFileTemplate {
 	profileTemplate := CredentialsFileTemplate{
-		CredentialProcess: fmt.Sprintf("aws_signing_helper credential-process --certificate %s --private-key %s --trust-anchor-arn %s --profile-arn %s --role-arn %s", certificateDirectory, privateKeyDirectory, trustAnchorArn, profileArn, roleArn),
+		CredentialProcess: fmt.Sprintf("aws_signing_helper credential-process --certificate %s --private-key %s --trust-anchor-arn %s --profile-arn %s --role-arn %s", certificatePath, privateKeyPath, trustAnchorArn, profileArn, roleArn),
 		Region:            region,
 	}
 	fmt.Println(profileTemplate)
