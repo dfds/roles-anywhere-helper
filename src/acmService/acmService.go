@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acm"
+	"github.com/dfds/iam-anywhere-ninja/fileNames"
 	"github.com/dfds/iam-anywhere-ninja/flags"
 	"github.com/spf13/cobra"
 )
@@ -29,12 +30,12 @@ func ImportCertificate(cmd *cobra.Command, args []string) {
 	svc := acm.New(sess)
 
 	// Load the certificate files into memory
-	certData, err := ioutil.ReadFile(certificateDirectory)
+	certData, err := ioutil.ReadFile(certificateDirectory + "/" + fileNames.Certificate)
 	if err != nil {
 		panic(err)
 	}
 
-	privateKeyData, err := ioutil.ReadFile(certificateDirectory)
+	privateKeyData, err := ioutil.ReadFile(certificateDirectory + "/" + fileNames.PrivateKey)
 	if err != nil {
 		panic(err)
 	}

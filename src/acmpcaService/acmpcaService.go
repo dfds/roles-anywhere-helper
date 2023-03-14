@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acmpca"
+	"github.com/dfds/iam-anywhere-ninja/fileNames"
 	"github.com/dfds/iam-anywhere-ninja/flags"
 	"github.com/spf13/cobra"
 )
@@ -84,7 +85,7 @@ func ImportCertificate(cmd *cobra.Command, args []string) {
 
 	println(certPEM)
 
-	certificateOut, err := os.Create("certificate.pem")
+	certificateOut, err := os.Create(fileNames.Certificate)
 
 	if err != nil {
 		panic(err)
@@ -98,7 +99,7 @@ func ImportCertificate(cmd *cobra.Command, args []string) {
 
 	println(certChainPEM)
 
-	privateKeyOut, err := os.Create("privatekey.pem")
+	privateKeyOut, err := os.Create(fileNames.PrivateKey)
 
 	if err != nil {
 		panic(err)
