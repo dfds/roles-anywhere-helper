@@ -12,7 +12,7 @@ import (
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
 )
 
-func ImportCertificate(profileName string, certificateDirectory string, certifcateArn string) {
+func ImportCertificate(profileName string, certificateDirectory string) {
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("eu-central-1"),
@@ -36,11 +36,16 @@ func ImportCertificate(profileName string, certificateDirectory string, certifca
 		panic(err)
 	}
 
+	certChainData, err := ioutil.ReadFile(certificateDirectory + fileNames.CertificateChain)
+	if err != nil {
+		panic(err)
+	}
+
 	// Import the certificate into ACM
 	input := &acm.ImportCertificateInput{
-		Certificate:    certData,
-		PrivateKey:     privateKeyData,
-		CertificateArn: aws.String(certifcateArn),
+		Certificate:      certData,
+		PrivateKey:       privateKeyData,
+		CertificateChain: certChainData,
 	}
 
 	result, err := svc.ImportCertificate(input)

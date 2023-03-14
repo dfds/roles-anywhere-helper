@@ -93,7 +93,7 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	}
 	defer certChainOut.Close()
 
-	certificateOut.WriteString(certChainPEM)
+	certChainOut.WriteString(certChainPEM)
 
 	privateKeyOut, err := os.Create(certificateDirectory + fileNames.PrivateKey)
 
@@ -104,7 +104,8 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 
 	pem.Encode(privateKeyOut, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)})
 
+	certArn := aws.StringValue(certResp.CertificateArn)
 	println("---------- CertificateArn -----------")
-	println(certResp.CertificateArn)
-	return *certResp.CertificateArn
+	println(certArn)
+	return certArn
 }
