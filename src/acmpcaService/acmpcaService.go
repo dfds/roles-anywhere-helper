@@ -14,16 +14,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/acmpca"
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
-	"github.com/dfds/iam-anywhere-ninja/flags"
-	"github.com/spf13/cobra"
 )
 
-func ImportCertificate(cmd *cobra.Command, args []string) {
-	profileName, _ := cmd.Flags().GetString(flags.ProfileName)
-	acmpcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
-	commonName, _ := cmd.Flags().GetString(flags.CommonName)
-	organizationName, _ := cmd.Flags().GetStringArray(flags.OrganizationName)
-	organizationalUnit, _ := cmd.Flags().GetStringArray(flags.OrganizationalUnit)
+func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName []string, organizationalUnit []string) {
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("eu-central-1"),

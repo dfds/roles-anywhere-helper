@@ -8,11 +8,17 @@ import (
 )
 
 var getCertificateCmd = &cobra.Command{
-	Use:   "get-certificate",
-	Short: "Get certificate",
-	Long:  `Get certificate`,
+	Use:   "generate-certificate",
+	Short: "Generate certificate",
+	Long:  `Generate certificate`,
 	Run: func(cmd *cobra.Command, args []string) {
-		acmpcaService.ImportCertificate(cmd, args)
+		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
+		acmpcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
+		commonName, _ := cmd.Flags().GetString(flags.CommonName)
+		organizationName, _ := cmd.Flags().GetStringArray(flags.OrganizationName)
+		organizationalUnit, _ := cmd.Flags().GetStringArray(flags.OrganizationalUnit)
+
+		acmpcaService.ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit)
 	},
 }
 
@@ -22,9 +28,8 @@ func init() {
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "n", "", "The organization name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "c", "", "The common name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "Arn for the ACM PCA")
-	getCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "", "Profile of the ACM PCA")
+	getCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Profile of the ACM PCA")
 
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CommonName)
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.AcmpcaArn)
-	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.ProfileName)
 }

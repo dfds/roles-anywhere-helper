@@ -12,7 +12,9 @@ var importCertificateCmd = &cobra.Command{
 	Short: "upload certificate to ACM",
 	Long:  `Adds your certificate to ACM`,
 	Run: func(cmd *cobra.Command, args []string) {
-		acmService.ImportCertificate(cmd, args)
+		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
+		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
+		acmService.ImportCertificate(profileName, certificateDirectory)
 	},
 }
 
