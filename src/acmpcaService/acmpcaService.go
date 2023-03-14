@@ -1,14 +1,19 @@
 package acmpcaService
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
+	"log"
 	"os"
 
+	"github.com/aws/aws-sdk-go-v2/config"
+	acmpcav2 "github.com/aws/aws-sdk-go-v2/service/acmpca"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -108,4 +113,33 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	println("---------- CertificateArn -----------")
 	println(certArn)
 	return certArn
+}
+
+func RevokeCertificate(profileName, certSerial, pcaArn string, revocationReason types.RevocationReason) (string, error) {
+	// Load config
+	cfg, err := config.LoadDefaultConfig(
+		context.TODO(),
+		config.WithRegion("eu-central-1"),
+		config.WithSharedConfigProfile(profileName))
+	if err != nil {
+		log.Fatalf("failed to load configuration, %v", err)
+	}
+
+	// Create a client
+	svc := acmpcav2.NewFromConfig(cfg)
+
+	//Revoke certificate
+	rci := &acmpcav2.RevokeCertificateInput{
+		CertificateAuthorityArn: aws.String(pcaArn),
+		CertificateSerial:       aws.String(certSerial),
+		RevocationReason:        revocationReason,
+	}
+
+	_, err = svc.RevokeCertificate(context.TODO(), rci)
+	if err != nil {
+		fmt.Println(err.Error())
+		return "", err
+	}
+
+	return "Successfully revoked certificate", nil
 }
