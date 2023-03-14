@@ -30,7 +30,7 @@ func init() {
 	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "c", "", "The common name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "Arn for the ACM PCA")
 	getCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Profile of the ACM PCA")
-	importCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
+	getCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
 
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CommonName)
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.AcmpcaArn)
