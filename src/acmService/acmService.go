@@ -16,7 +16,6 @@ import (
 func ImportCertificate(cmd *cobra.Command, args []string) {
 	profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 	certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
-	privateKeyDirectory, _ := cmd.Flags().GetString(flags.PrivateKeyDirectory)
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("eu-central-1"),
@@ -35,7 +34,7 @@ func ImportCertificate(cmd *cobra.Command, args []string) {
 		panic(err)
 	}
 
-	privateKeyData, err := ioutil.ReadFile(privateKeyDirectory)
+	privateKeyData, err := ioutil.ReadFile(certificateDirectory)
 	if err != nil {
 		panic(err)
 	}
