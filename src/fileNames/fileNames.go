@@ -1,3 +1,4 @@
 package fileNames
 
-const PrivateKey "privatekey.pem"
+const PrivateKey string = "privatekey.pem"
+const Certificate string = "privatekey.pem"
