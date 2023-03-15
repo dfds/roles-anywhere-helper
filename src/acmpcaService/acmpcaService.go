@@ -1,31 +1,34 @@
 package acmpcaService
 
 import (
+	"context"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/acmpca"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/acm"
+	"github.com/aws/aws-sdk-go-v2/service/acmpca"
+	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
 	"github.com/dfds/iam-anywhere-ninja/awsService"
 	"github.com/dfds/iam-anywhere-ninja/certificateHandler"
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
+	"time"
 )
 
-func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName string, organizationalUnit string, certificateDirectory string) string {
+func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
 
-	sess := awsService.SetAwsSession(profileName)
+	ctx, cfg := awsService.ConfigureAws(profileName)
 
 	privateKey := certificateHandler.GeneratePrivateKey()
 
-	acmPCA := acmpca.New(sess)
+	acmPCA := acmpca.NewFromConfig(cfg)
 
-	certResp, err := acmPCA.IssueCertificate(&acmpca.IssueCertificateInput{
+	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
 		Csr:                     certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, privateKey),
-		SigningAlgorithm:        aws.String(acmpca.SigningAlgorithmSha256withrsa),
-		Validity: &acmpca.Validity{
-			Type:  aws.String(acmpca.ValidityPeriodTypeDays),
+		SigningAlgorithm:        "SHA256WITHRSA",
+		Validity: &types.Validity{
+			Type:  "DAYS",
 			Value: aws.Int64(6),
 		},
 	})
@@ -34,21 +37,58 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 		panic(err)
 	}
 
-	certData, err := acmPCA.GetCertificate(&acmpca.GetCertificateInput{
-		CertificateArn:          certResp.CertificateArn,
-		CertificateAuthorityArn: aws.String(acmpcaArn),
-	})
+	waiter := acmpca.NewCertificateIssuedWaiter(acmPCA)
+
+	certData, err := waiter.WaitForOutput(
+		ctx,
+		&acmpca.GetCertificateInput{
+			CertificateArn:          certResp.CertificateArn,
+			CertificateAuthorityArn: aws.String(acmpcaArn),
+		},
+		5*time.Second,
+	)
 	if err != nil {
 		fmt.Println("Failed to get certificate data:", err)
 		panic(err)
 	}
 
-	certificateHandler.CreatePemFileFromString(aws.StringValue(certData.Certificate), certificateDirectory, fileNames.Certificate)
-	certificateHandler.CreatePemFileFromString(aws.StringValue(certData.CertificateChain), certificateDirectory, fileNames.CertificateChain)
+	certificateHandler.CreatePemFileFromString(*certData.Certificate, certificateDirectory, fileNames.Certificate)
+	certificateHandler.CreatePemFileFromString(*certData.CertificateChain, certificateDirectory, fileNames.CertificateChain)
 	certificateHandler.CreatePemFileFromPemBlock(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(privateKey)}, certificateDirectory, fileNames.PrivateKey)
 
-	certArn := aws.StringValue(certResp.CertificateArn)
+	certArn := *certResp.CertificateArn
 	println("---------- CertificateArn -----------")
 	println(certArn)
 	return certArn
+}
+
+func RevokeCertificate(profileName, certArn, pcaArn, revocationReason string) (string, error) {
+
+	ctx, cfg := awsService.ConfigureAws(profileName)
+	// Retrieve certificate serial
+	acmSvc := acm.NewFromConfig(cfg)
+
+	dco, err := acmSvc.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	// Create an ACM PCA client
+	svc := acmpca.NewFromConfig(cfg)
+
+	//Revoke certificate
+	rci := &acmpca.RevokeCertificateInput{
+		CertificateAuthorityArn: aws.String(pcaArn),
+		CertificateSerial:       dco.Certificate.Serial,
+		RevocationReason:        types.RevocationReason(revocationReason),
+	}
+
+	_, err = svc.RevokeCertificate(ctx, rci)
+	if err != nil {
+		fmt.Println(err.Error())
+		return "", err
+	}
+
+	return "Successfully revoked certificate", nil
 }

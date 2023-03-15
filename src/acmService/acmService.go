@@ -3,16 +3,16 @@ package acmService
 import (
 	"os"
 
-	"github.com/aws/aws-sdk-go/service/acm"
+	"github.com/aws/aws-sdk-go-v2/service/acm"
 	"github.com/dfds/iam-anywhere-ninja/awsService"
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
 )
 
-func ImportCertificate(profileName string, certificateDirectory string) string {
+func ImportCertificate(profileName, certificateDirectory string) string {
 
-	sess := awsService.SetAwsSession(profileName)
+	ctx, cfg := awsService.ConfigureAws(profileName)
 
-	svc := acm.New(sess)
+	svc := acm.NewFromConfig(cfg)
 
 	input := &acm.ImportCertificateInput{
 		Certificate:      ReadFile(certificateDirectory, fileNames.Certificate),
@@ -20,7 +20,7 @@ func ImportCertificate(profileName string, certificateDirectory string) string {
 		CertificateChain: ReadFile(certificateDirectory, fileNames.CertificateChain),
 	}
 
-	result, err := svc.ImportCertificate(input)
+	result, err := svc.ImportCertificate(ctx, input)
 	if err != nil {
 		panic(err)
 	}
