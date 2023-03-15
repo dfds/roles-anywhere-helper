@@ -2,7 +2,6 @@ package acmService
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -26,21 +25,28 @@ func ImportCertificate(profileName string, certificateDirectory string) {
 	svc := acm.New(sess)
 
 	// Load the certificate files into memory
-	certData, err := ioutil.ReadFile(certificateDirectory + "/" + fileNames.Certificate)
+	certData, err := os.ReadFile(certificateDirectory + fileNames.Certificate)
 	if err != nil {
 		panic(err)
 	}
 
-	privateKeyData, err := ioutil.ReadFile(certificateDirectory + "/" + fileNames.PrivateKey)
+	privateKeyData, err := os.ReadFile(certificateDirectory + fileNames.PrivateKey)
+	if err != nil {
+		panic(err)
+	}
+
+	certChainData, err := os.ReadFile(certificateDirectory + fileNames.CertificateChain)
 	if err != nil {
 		panic(err)
 	}
 
 	// Import the certificate into ACM
 	input := &acm.ImportCertificateInput{
-		Certificate: certData,
-		PrivateKey:  privateKeyData,
+		Certificate:      certData,
+		PrivateKey:       privateKeyData,
+		CertificateChain: certChainData,
 	}
+
 	result, err := svc.ImportCertificate(input)
 	if err != nil {
 		panic(err)

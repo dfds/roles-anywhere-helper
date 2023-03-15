@@ -28,9 +28,9 @@ func Configure(profileName string, certificatePath string, privateKeyPath string
 	}
 
 	profileName = profileHandler.SetProfileName(profileName)
-	fmt.Printf("Profile Name set to %s", profileName)
 	profileTemplate := ProcessCredentialProcessTemplate(certificatePath, privateKeyPath, trustAnchorArn, profileArn, roleArn, region)
 	WriteIniFile(&profileTemplate, profileName)
+	fmt.Printf("Profile %s set", profileName)
 }
 
 func GetCredentialsFilePath() string {
@@ -44,7 +44,6 @@ func ProcessCredentialProcessTemplate(certificatePath string, privateKeyPath str
 		CredentialProcess: fmt.Sprintf("aws_signing_helper credential-process --certificate %s --private-key %s --trust-anchor-arn %s --profile-arn %s --role-arn %s", certificatePath, privateKeyPath, trustAnchorArn, profileArn, roleArn),
 		Region:            region,
 	}
-	fmt.Println(profileTemplate)
 
 	return profileTemplate
 }

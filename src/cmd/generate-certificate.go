@@ -15,10 +15,11 @@ var getCertificateCmd = &cobra.Command{
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		acmpcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
 		commonName, _ := cmd.Flags().GetString(flags.CommonName)
-		organizationName, _ := cmd.Flags().GetStringArray(flags.OrganizationName)
-		organizationalUnit, _ := cmd.Flags().GetStringArray(flags.OrganizationalUnit)
+		organizationName, _ := cmd.Flags().GetString(flags.OrganizationName)
+		organizationalUnit, _ := cmd.Flags().GetString(flags.OrganizationalUnit)
+		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 
-		acmpcaService.ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit)
+		acmpcaService.ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory)
 	},
 }
 
@@ -29,7 +30,9 @@ func init() {
 	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "c", "", "The common name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "Arn for the ACM PCA")
 	getCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Profile of the ACM PCA")
+	getCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
 
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CommonName)
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.AcmpcaArn)
+	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CertificateDirectory)
 }

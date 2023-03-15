@@ -16,7 +16,7 @@ import (
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
 )
 
-func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName []string, organizationalUnit []string) {
+func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName string, organizationalUnit string, certificateDirectory string) string {
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("eu-central-1"),
@@ -30,21 +30,21 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	csrTemplate := x509.CertificateRequest{
 		Subject: pkix.Name{
 			CommonName:         commonName,
-			Organization:       organizationName,
-			OrganizationalUnit: organizationalUnit,
+			Organization:       []string{organizationName},
+			OrganizationalUnit: []string{organizationalUnit},
 		},
 	}
 
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		fmt.Println("acme: Failed to generate private key:", err)
-		return
+		panic(err)
 	}
 
 	csrBytes, err := x509.CreateCertificateRequest(rand.Reader, &csrTemplate, key)
 	if err != nil {
 		fmt.Println("Failed to create CSR:", err)
-		return
+		panic(err)
 	}
 
 	csrPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})
@@ -61,7 +61,7 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	})
 	if err != nil {
 		fmt.Println("Failed to issue certificate:", err)
-		return
+		panic(err)
 	}
 
 	certData, err := acmPCA.GetCertificate(&acmpca.GetCertificateInput{
@@ -70,29 +70,32 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	})
 	if err != nil {
 		fmt.Println("Failed to get certificate data:", err)
-		return
+		panic(err)
 	}
 
-	println("### Certificate ##")
 	certPEM := aws.StringValue(certData.Certificate)
 
-	println(certPEM)
-
-	certificateOut, err := os.Create(fileNames.Certificate)
+	certificateOut, err := os.Create(certificateDirectory + fileNames.Certificate)
 
 	if err != nil {
 		panic(err)
 	}
+
 	defer certificateOut.Close()
 
 	certificateOut.WriteString(certPEM)
 
-	println("### Certificate Chain ##")
 	certChainPEM := aws.StringValue(certData.CertificateChain)
+	certChainOut, err := os.Create(certificateDirectory + fileNames.CertificateChain)
 
-	println(certChainPEM)
+	if err != nil {
+		panic(err)
+	}
+	defer certChainOut.Close()
 
-	privateKeyOut, err := os.Create(fileNames.PrivateKey)
+	certChainOut.WriteString(certChainPEM)
+
+	privateKeyOut, err := os.Create(certificateDirectory + fileNames.PrivateKey)
 
 	if err != nil {
 		panic(err)
@@ -101,4 +104,8 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 
 	pem.Encode(privateKeyOut, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)})
 
+	certArn := aws.StringValue(certResp.CertificateArn)
+	println("---------- CertificateArn -----------")
+	println(certArn)
+	return certArn
 }

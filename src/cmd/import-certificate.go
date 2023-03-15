@@ -25,4 +25,5 @@ func init() {
 	importCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
 
 	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), flags.CertificateDirectory)
+	cobra.MarkFlagRequired(importCertificateCmd.PersistentFlags(), flags.CertificateArn)
 }
