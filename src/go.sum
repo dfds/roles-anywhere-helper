@@ -54,6 +54,8 @@ github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.24 h1:r+Kv+SEJquhAZXaJ7G
 github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.24/go.mod h1:gAuCezX/gob6BSMbItsSlMb6WZGV7K2+fWOvk8xBSto=
 github.com/aws/aws-sdk-go-v2/internal/ini v1.3.31 h1:hf+Vhp5WtTdcSdE+yEcUz8L73sAzN0R+0jQv+Z51/mI=
 github.com/aws/aws-sdk-go-v2/internal/ini v1.3.31/go.mod h1:5zUjguZfG5qjhG9/wqmuyHRyUftl2B5Cp6NNxNC6kRA=
+github.com/aws/aws-sdk-go-v2/service/acm v1.17.6 h1:lzlh2VEPCDpOoGHfAfnKI77vO+FNQwkt5GQrphr24xA=
+github.com/aws/aws-sdk-go-v2/service/acm v1.17.6/go.mod h1:c1nFrMiJxqISjWoQ6R4x0fiAREIWh7RGp5K6lhmuyt0=
 github.com/aws/aws-sdk-go-v2/service/acmpca v1.21.5 h1:q7VEabBME9Vp9R0kehHZ0V3HuSw+zAjtS4tKhBbZ/Ro=
 github.com/aws/aws-sdk-go-v2/service/acmpca v1.21.5/go.mod h1:81Gnjd5uBXgYSsCfAkmJlJnONDySfS7jAhIJDbPtDnw=
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.24 h1:c5qGfdbCHav6viBwiyDns3OXqhqAbGjfIB4uVu2ayhk=

@@ -8,28 +8,28 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/acm"
+	"github.com/aws/aws-sdk-go-v2/service/acmpca"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
+	"github.com/dfds/iam-anywhere-ninja/fileNames"
 	"log"
 	"os"
-
-	"github.com/aws/aws-sdk-go-v2/config"
-	acmpcav2 "github.com/aws/aws-sdk-go-v2/service/acmpca"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/acmpca"
-	"github.com/dfds/iam-anywhere-ninja/fileNames"
+	"time"
 )
 
-func ImportCertificate(profileName string, acmpcaArn string, commonName string, organizationName string, organizationalUnit string, certificateDirectory string) string {
+func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
 
-	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String("eu-central-1"),
-		Credentials: credentials.NewSharedCredentials("", profileName),
-	})
+	// Load config
+	ctx := context.TODO()
+
+	cfg, err := config.LoadDefaultConfig(
+		ctx,
+		config.WithRegion("eu-central-1"),
+		config.WithSharedConfigProfile(profileName))
 	if err != nil {
-		fmt.Println("error:", err)
-		os.Exit(1)
+		log.Fatalf("failed to load configuration, %v", err)
 	}
 
 	csrTemplate := x509.CertificateRequest{
@@ -53,14 +53,14 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 	}
 
 	csrPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})
+	acmPCA := acmpca.NewFromConfig(cfg)
 
-	acmPCA := acmpca.New(sess)
-	certResp, err := acmPCA.IssueCertificate(&acmpca.IssueCertificateInput{
+	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
 		Csr:                     csrPEM,
-		SigningAlgorithm:        aws.String(acmpca.SigningAlgorithmSha256withrsa),
-		Validity: &acmpca.Validity{
-			Type:  aws.String(acmpca.ValidityPeriodTypeDays),
+		SigningAlgorithm:        "SHA256WITHRSA",
+		Validity: &types.Validity{
+			Type:  "DAYS",
 			Value: aws.Int64(6),
 		},
 	})
@@ -69,16 +69,22 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 		panic(err)
 	}
 
-	certData, err := acmPCA.GetCertificate(&acmpca.GetCertificateInput{
-		CertificateArn:          certResp.CertificateArn,
-		CertificateAuthorityArn: aws.String(acmpcaArn),
-	})
+	waiter := acmpca.NewCertificateIssuedWaiter(acmPCA)
+
+	certData, err := waiter.WaitForOutput(
+		ctx,
+		&acmpca.GetCertificateInput{
+			CertificateArn:          certResp.CertificateArn,
+			CertificateAuthorityArn: aws.String(acmpcaArn),
+		},
+		5*time.Second,
+	)
 	if err != nil {
 		fmt.Println("Failed to get certificate data:", err)
 		panic(err)
 	}
 
-	certPEM := aws.StringValue(certData.Certificate)
+	certPEM := *certData.Certificate
 
 	certificateOut, err := os.Create(certificateDirectory + fileNames.Certificate)
 
@@ -90,7 +96,7 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 
 	certificateOut.WriteString(certPEM)
 
-	certChainPEM := aws.StringValue(certData.CertificateChain)
+	certChainPEM := *certData.CertificateChain
 	certChainOut, err := os.Create(certificateDirectory + fileNames.CertificateChain)
 
 	if err != nil {
@@ -109,33 +115,43 @@ func ImportCertificate(profileName string, acmpcaArn string, commonName string, 
 
 	pem.Encode(privateKeyOut, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)})
 
-	certArn := aws.StringValue(certResp.CertificateArn)
+	certArn := certResp.CertificateArn
 	println("---------- CertificateArn -----------")
 	println(certArn)
-	return certArn
+	return *certArn
 }
 
-func RevokeCertificate(profileName, certSerial, pcaArn string, revocationReason types.RevocationReason) (string, error) {
+func RevokeCertificate(profileName, certArn, pcaArn, revocationReason string) (string, error) {
 	// Load config
+	ctx := context.TODO()
 	cfg, err := config.LoadDefaultConfig(
-		context.TODO(),
+		ctx,
 		config.WithRegion("eu-central-1"),
 		config.WithSharedConfigProfile(profileName))
 	if err != nil {
 		log.Fatalf("failed to load configuration, %v", err)
 	}
 
-	// Create a client
-	svc := acmpcav2.NewFromConfig(cfg)
+	// Retrieve certificate serial
+	acmSvc := acm.NewFromConfig(cfg)
 
-	//Revoke certificate
-	rci := &acmpcav2.RevokeCertificateInput{
-		CertificateAuthorityArn: aws.String(pcaArn),
-		CertificateSerial:       aws.String(certSerial),
-		RevocationReason:        revocationReason,
+	dco, err := acmSvc.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
+	if err != nil {
+		fmt.Println(err)
+		return "", err
 	}
 
-	_, err = svc.RevokeCertificate(context.TODO(), rci)
+	// Create an ACM PCA client
+	svc := acmpca.NewFromConfig(cfg)
+
+	//Revoke certificate
+	rci := &acmpca.RevokeCertificateInput{
+		CertificateAuthorityArn: aws.String(pcaArn),
+		CertificateSerial:       dco.Certificate.Serial,
+		RevocationReason:        types.RevocationReason(revocationReason),
+	}
+
+	_, err = svc.RevokeCertificate(ctx, rci)
 	if err != nil {
 		fmt.Println(err.Error())
 		return "", err
