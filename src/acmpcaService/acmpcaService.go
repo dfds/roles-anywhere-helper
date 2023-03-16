@@ -18,6 +18,7 @@ import (
 func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
 
 	ctx, cfg := awsService.ConfigureAws(profileName)
+	println("Generating new Certificate")
 
 	privateKey := certificateHandler.GeneratePrivateKey()
 
@@ -51,6 +52,8 @@ func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, org
 		fmt.Println("Failed to get certificate data:", err)
 		panic(err)
 	}
+
+	printf("Creating certificate Files.... in %s", certificateDirectory)
 
 	certificateHandler.CreatePemFileFromString(*certData.Certificate, certificateDirectory, fileNames.Certificate)
 	certificateHandler.CreatePemFileFromString(*certData.CertificateChain, certificateDirectory, fileNames.CertificateChain)

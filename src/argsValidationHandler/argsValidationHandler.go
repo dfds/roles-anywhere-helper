@@ -14,7 +14,7 @@ func IsValidRevocationReason(revocationReason string) error {
 		revocationReasons.Superseded,
 		revocationReasons.CessationOfOperation,
 		revocationReasons.PrivilegeWithdrawn,
-		revocationReasons.AACompromise
+		revocationReasons.AACompromise,
 	}
 
 	result := false

@@ -21,6 +21,8 @@ func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName st
 	defer fileOut.Close()
 
 	pem.Encode(fileOut, pemData)
+
+	Printf("%s Created", fileName)
 }
 
 func CreatePemFileFromString(pemData string, directory string, fileName string) {
@@ -34,6 +36,8 @@ func CreatePemFileFromString(pemData string, directory string, fileName string) 
 	defer fileOut.Close()
 
 	fileOut.WriteString(pemData)
+
+	Printf("%s Created", fileName)
 }
 
 func CreateCsrPEM(commonName string, organizationName string, organizationalUnit string, privateKey *rsa.PrivateKey) []byte {
