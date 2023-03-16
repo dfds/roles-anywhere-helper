@@ -18,7 +18,7 @@ import (
 func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
 
 	ctx, cfg := awsService.ConfigureAws(profileName)
-	println("Generating new Certificate")
+	println("Generating new certificate")
 
 	privateKey := certificateHandler.GeneratePrivateKey()
 
