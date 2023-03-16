@@ -53,7 +53,7 @@ func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, org
 		panic(err)
 	}
 
-	printf("Creating certificate Files.... in %s", certificateDirectory)
+	printf("Creating certificate files.... in %s", certificateDirectory)
 
 	certificateHandler.CreatePemFileFromString(*certData.Certificate, certificateDirectory, fileNames.Certificate)
 	certificateHandler.CreatePemFileFromString(*certData.CertificateChain, certificateDirectory, fileNames.CertificateChain)
