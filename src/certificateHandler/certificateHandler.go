@@ -22,7 +22,7 @@ func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName st
 
 	pem.Encode(fileOut, pemData)
 
-	Printf("%s Created", fileName)
+	Printf("%s created", fileName)
 }
 
 func CreatePemFileFromString(pemData string, directory string, fileName string) {
