@@ -65,22 +65,20 @@ func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, org
 func RevokeCertificate(profileName, certArn, pcaArn, revocationReason string) (string, error) {
 
 	ctx, cfg := awsService.ConfigureAws(profileName)
-	// Retrieve certificate serial
+
 	acmSvc := acm.NewFromConfig(cfg)
 
-	dco, err := acmSvc.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
+	certData, err := acmSvc.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
 	if err != nil {
 		fmt.Println(err)
 		return "", err
 	}
 
-	// Create an ACM PCA client
 	svc := acmpca.NewFromConfig(cfg)
 
-	//Revoke certificate
 	rci := &acmpca.RevokeCertificateInput{
 		CertificateAuthorityArn: aws.String(pcaArn),
-		CertificateSerial:       dco.Certificate.Serial,
+		CertificateSerial:       certData.Certificate.Serial,
 		RevocationReason:        types.RevocationReason(revocationReason),
 	}
 

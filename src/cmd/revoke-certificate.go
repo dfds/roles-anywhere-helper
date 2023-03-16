@@ -3,36 +3,11 @@ package cmd
 import (
 	"fmt"
 	"github.com/dfds/iam-anywhere-ninja/acmpcaService"
+	"github.com/dfds/iam-anywhere-ninja/argsValidationHandler"
 	"github.com/dfds/iam-anywhere-ninja/flags"
+	"github.com/dfds/iam-anywhere-ninja/revocationReasons"
 	"github.com/spf13/cobra"
 )
-
-func IsValidReason(revocationReason string) error {
-	validReasons := []string{
-		"UNSPECIFIED",
-		"KEY_COMPROMISE",
-		"CERTIFICATE_AUTHORITY_COMPROMISE",
-		"AFFILIATION_CHANGED",
-		"SUPERSEDED",
-		"CESSATION_OF_OPERATION",
-		"PRIVILEGE_WITHDRAWN",
-		"A_A_COMPROMISE",
-	}
-	result := false
-	for i := 0; i < len(validReasons); i++ {
-		if validReasons[i] == revocationReason {
-			result = true
-			break
-		}
-	}
-
-	if result == false {
-		err := fmt.Errorf("%s is not a valid reason", revocationReason)
-		return err
-	}
-
-	return nil
-}
 
 var revokeCertificateCmd = &cobra.Command{
 	Use:   "revoke-certificate",
@@ -44,7 +19,7 @@ var revokeCertificateCmd = &cobra.Command{
 		pcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
 		revocationReason, _ := cmd.Flags().GetString(flags.RevocationReason)
 
-		err := IsValidReason(revocationReason)
+		err := argsValidationHandler.IsValidRevocationReason(revocationReason)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -59,9 +34,8 @@ func init() {
 	revokeCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Name of the profile to be used for access to the PCA")
 	revokeCertificateCmd.PersistentFlags().StringP(flags.CertificateArn, "c", "", "ARN of the certificate to be revoked")
 	revokeCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "ARN of the private CA that issues the certificate")
-	revokeCertificateCmd.PersistentFlags().StringP(flags.RevocationReason, "r", "", "Reason why the certificate is revoked")
+	revokeCertificateCmd.PersistentFlags().StringP(flags.RevocationReason, "r", revocationReasons.Unspecified, "Reason why the certificate is revoked")
 
 	cobra.MarkFlagRequired(revokeCertificateCmd.PersistentFlags(), flags.CertificateArn)
 	cobra.MarkFlagRequired(revokeCertificateCmd.PersistentFlags(), flags.AcmpcaArn)
-	cobra.MarkFlagRequired(revokeCertificateCmd.PersistentFlags(), flags.RevocationReason)
 }
