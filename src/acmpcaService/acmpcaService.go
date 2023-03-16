@@ -5,6 +5,8 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/acm"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca"
@@ -12,10 +14,9 @@ import (
 	"github.com/dfds/iam-anywhere-ninja/awsService"
 	"github.com/dfds/iam-anywhere-ninja/certificateHandler"
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
-	"time"
 )
 
-func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
+func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
 
 	ctx, cfg := awsService.ConfigureAws(profileName)
 	println("Generating new certificate")
@@ -53,7 +54,7 @@ func ImportCertificate(profileName, acmpcaArn, commonName, organizationName, org
 		panic(err)
 	}
 
-	printf("Creating certificate files.... in %s", certificateDirectory)
+	fmt.Printf("Creating certificate files.... in %s", certificateDirectory)
 
 	certificateHandler.CreatePemFileFromString(*certData.Certificate, certificateDirectory, fileNames.Certificate)
 	certificateHandler.CreatePemFileFromString(*certData.CertificateChain, certificateDirectory, fileNames.CertificateChain)
