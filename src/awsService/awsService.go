@@ -1,22 +1,22 @@
 package awsService
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"log"
 )
 
-func SetAwsSession(profileName string) *session.Session {
-	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String("eu-central-1"),
-		Credentials: credentials.NewSharedCredentials("", profileName),
-	})
+func ConfigureAws(profileName string) (context.Context, aws.Config) {
+
+	ctx := context.TODO()
+	cfg, err := config.LoadDefaultConfig(
+		ctx,
+		config.WithRegion("eu-central-1"),
+		config.WithSharedConfigProfile(profileName))
 	if err != nil {
-		fmt.Println("error:", err)
-		os.Exit(1)
+		log.Fatalf("failed to load configuration, %v", err)
 	}
-	return sess
+
+	return ctx, cfg
 }
