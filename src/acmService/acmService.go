@@ -22,7 +22,7 @@ func ImportCertificate(profileName, certificateDirectory string) string {
 
 	result, err := svc.ImportCertificate(ctx, input)
 	if err != nil {
-		println("Importing Certificate Error", err)
+		println("Importing certificate error", err)
 		panic(err)
 	}
 
