@@ -37,7 +37,7 @@ func CreatePemFileFromString(pemData string, directory string, fileName string) 
 
 	fileOut.WriteString(pemData)
 
-	Printf("%s Created", fileName)
+	Printf("%s created", fileName)
 }
 
 func CreateCsrPEM(commonName string, organizationName string, organizationalUnit string, privateKey *rsa.PrivateKey) []byte {
