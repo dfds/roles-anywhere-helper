@@ -17,7 +17,7 @@ type CredentialsFileTemplate struct {
 }
 
 func Configure(profileName string, certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) {
-	fmt.Println("Configuring Credential file")
+	fmt.Println("Configuring credential file")
 	file, err := CreateCredentialsFile(GetCredentialsFilePath())
 	defer file.Close()
 
