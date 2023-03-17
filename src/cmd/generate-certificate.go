@@ -19,15 +19,15 @@ var getCertificateCmd = &cobra.Command{
 		organizationalUnit, _ := cmd.Flags().GetString(flags.OrganizationalUnit)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 
-		acmpcaService.ImportCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory)
+		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(getCertificateCmd)
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationalUnit, "u", "", "The organization unit for the X509 certificate")
-	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "n", "", "The organization name for the X509 certificate")
-	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "c", "", "The common name for the X509 certificate")
+	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "o", "", "The organization name for the X509 certificate")
+	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "n", "", "The common name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "Arn for the ACM PCA")
 	getCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Profile of the ACM PCA")
 	getCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
