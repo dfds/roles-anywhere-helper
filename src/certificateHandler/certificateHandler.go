@@ -40,8 +40,8 @@ func CreatePemFileFromString(pemData string, directory string, fileName string) 
 	fmt.Printf("%s created", fileName)
 }
 
-func CreateCsrPEM(commonName string, organizationName string, organizationalUnit string, privateKey *rsa.PrivateKey) []byte {
-	csrTemplate := GenerateCsrTemplate(commonName, organizationName, organizationalUnit)
+func CreateCsrPEM(commonName string, organizationName string, organizationalUnit string, country string, locality string, province string, privateKey *rsa.PrivateKey) []byte {
+	csrTemplate := GenerateCsrTemplate(commonName, organizationName, organizationalUnit, country, locality, province)
 
 	csrBytes, err := x509.CreateCertificateRequest(rand.Reader, &csrTemplate, privateKey)
 	if err != nil {
@@ -62,12 +62,15 @@ func GeneratePrivateKey() *rsa.PrivateKey {
 	return key
 }
 
-func GenerateCsrTemplate(commonName string, organizationName string, organizationalUnit string) x509.CertificateRequest {
+func GenerateCsrTemplate(commonName string, organizationName string, organizationalUnit string, country string, locality string, province string) x509.CertificateRequest {
 	csrTemplate := x509.CertificateRequest{
 		Subject: pkix.Name{
 			CommonName:         commonName,
 			Organization:       []string{organizationName},
 			OrganizationalUnit: []string{organizationalUnit},
+			Country:            []string{country},
+			Locality:           []string{locality},
+			Province:           []string{province},
 		},
 	}
 	return csrTemplate

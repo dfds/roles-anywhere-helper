@@ -16,7 +16,7 @@ import (
 	"github.com/dfds/iam-anywhere-ninja/fileNames"
 )
 
-func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, certificateDirectory string) string {
+func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory string) string {
 
 	ctx, cfg := awsService.ConfigureAws(profileName)
 	println("Generating new certificate")
@@ -27,7 +27,7 @@ func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, o
 
 	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
-		Csr:                     certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, privateKey),
+		Csr:                     certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, country, locality, province, privateKey),
 		SigningAlgorithm:        "SHA256WITHRSA",
 		Validity: &types.Validity{
 			Type:  "DAYS",
