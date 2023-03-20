@@ -31,7 +31,7 @@ func init() {
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationalUnit, "u", "", "The organization unit for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "o", "", "The organization name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "n", "", "The common name for the X509 certificate")
-	getCertificateCmd.PersistentFlags().StringP(flags.Country, "c", "", "The country name for the X509 certificate")
+	getCertificateCmd.PersistentFlags().StringP(flags.Country, "k", "", "The country name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.Locality, "l", "", "The locality name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.Province, "s", "", "The state or province name for the X509 certificate")
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "Arn for the ACM PCA")
