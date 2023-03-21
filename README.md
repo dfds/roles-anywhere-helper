@@ -1,9 +1,10 @@
 # iam-anywhere-ninja
 
 ## Introduction
-Allows to easily setup AWS iam roles anywhere credential file on a machine, this CLI makes Assumtions that you are using a AWS Private CA, AWS Certificate Maanager and have already set IAM Roles Anywhere Correctly.
+Allows to easily setup AWS iam roles anywhere credential file on a machine, this CLI makes Assumtions that you are using a AWS Private CA, AWS Certificate Maanager and have already set IAM Roles Anywhere Correctly. This was designed to work on Linux, Windows and Mac.
 
 ## Purpose
+The purpose of this CLI is to make it really easy for development teams to configure, revoke and Rotate Credentials on the machine that needs access to AWS via IAM Roles anywhere. Idealy this would be used in the CICD pipeline. 
 
 ## Feautres
 
