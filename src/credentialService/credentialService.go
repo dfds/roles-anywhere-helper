@@ -18,6 +18,10 @@ type CredentialsFileTemplate struct {
 
 func Configure(profileName string, certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) {
 	fmt.Println("Configuring credential file")
+
+	err := awsSignHelpExists()
+	Check(err)
+
 	file, err := CreateCredentialsFile(GetCredentialsFilePath())
 	defer file.Close()
 
