@@ -16,19 +16,21 @@ The purpose of this CLI is to make it really easy for development teams to confi
 
 ## Prequistis 
 
-- AWS_Signing_helper - Found here https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html
+- [AWS_Signing_helper - Found here](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html)
 - AWS Private CA provitioned with CLR for Credential Revocation
 - AWS IAM Roles Anywhere configured.
 
 ## Getting Started
 
 ### Installation
-
+- Download the binary for your target platform from
+  the [releases page](https://github.com/dfds/iam-anywhere-helper/releases)
+  
 ### Usage
 
 #### configure-credential
 
-#### setup
+#### setup-all
 
 #### generate-certificate
 
@@ -37,3 +39,15 @@ The purpose of this CLI is to make it really easy for development teams to confi
 #### revoke-certificate
 
 #### rotate-certificate
+
+## Contributions
+
+Contributions are welcome :)
+
+* Feel free to contribute enhancements or bug fixes.
+    * Fork this repo, apply your changes and create a PR pointing to this repo and the main branch
+* If you have any ideas or suggestions please open an issue and describe your idea or feature request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details
