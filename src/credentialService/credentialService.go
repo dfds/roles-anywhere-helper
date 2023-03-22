@@ -2,12 +2,17 @@ package credentialService
 
 import (
 	"fmt"
-
 	"os"
+	"path/filepath"
 
+	"github.com/dfds/iam-anywhere-ninja/executableFinder"
 	"github.com/dfds/iam-anywhere-ninja/profileHandler"
+
 	"gopkg.in/ini.v1"
 )
+
+const awsSignHelpName = "aws_signing_helper"
+const awsCredDir = "/.aws/credentials"
 
 var CredentialsFilePath = GetCredentialsFilePath()
 
@@ -19,18 +24,17 @@ type CredentialsFileTemplate struct {
 func Configure(profileName string, certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) {
 	fmt.Println("Configuring credential file")
 
-	err := awsSignHelpExists()
+	err := executableFinder.CommandExists(awsSignHelpName)
 	Check(err)
 
 	file, err := CreateCredentialsFile(GetCredentialsFilePath())
-	defer file.Close()
-
+	
 	if err != nil {
 		fmt.Println("Credential file already exists:", err)
 	} else {
 		fmt.Println("Credential file written successfully!")
 	}
-
+	defer file.Close()
 	profileName = profileHandler.SetProfileName(profileName)
 	profileTemplate := ProcessCredentialProcessTemplate(certificatePath, privateKeyPath, trustAnchorArn, profileArn, roleArn, region)
 	WriteIniFile(&profileTemplate, profileName)
@@ -40,13 +44,21 @@ func Configure(profileName string, certificatePath string, privateKeyPath string
 func GetCredentialsFilePath() string {
 	homeDir, err := os.UserHomeDir()
 	Check(err)
-	return homeDir + "/.aws/credentials"
+	return filepath.Join(homeDir, awsCredDir)
 }
 
 func ProcessCredentialProcessTemplate(certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) CredentialsFileTemplate {
 	profileTemplate := CredentialsFileTemplate{
-		CredentialProcess: fmt.Sprintf("aws_signing_helper credential-process --certificate %s --private-key %s --trust-anchor-arn %s --profile-arn %s --role-arn %s", certificatePath, privateKeyPath, trustAnchorArn, profileArn, roleArn),
-		Region:            region,
+		CredentialProcess: fmt.Sprintf(
+			"%s credential-process --certificate %s --private-key %s --trust-anchor-arn %s --profile-arn %s --role-arn %s",
+			awsSignHelpName,
+			certificatePath,
+			privateKeyPath,
+			trustAnchorArn,
+			profileArn,
+			roleArn,
+		),
+		Region: region,
 	}
 
 	return profileTemplate
