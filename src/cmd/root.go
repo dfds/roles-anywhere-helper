@@ -13,7 +13,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "iam-anywhere-ninja",
 	Short: "A CLI tool to help development teams with IAM roles anywhere setup.",
-	Long:  `A CLI tool for to help assist with the setup of IAM roles anywhere on on-premess machines.`,
+	Long:  `A CLI tool for to help assist with the setup of IAM roles anywhere on on-premise machines.`,
 }
 
 func Execute() {
