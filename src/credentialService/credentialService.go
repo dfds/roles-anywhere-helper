@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dfds/iam-anywhere-ninja/executableFinder"
-	"github.com/dfds/iam-anywhere-ninja/profileHandler"
+	"github.com/dfds/roles-anywhere-helper/executableFinder"
+	"github.com/dfds/roles-anywhere-helper/profileHandler"
 
 	"gopkg.in/ini.v1"
 )

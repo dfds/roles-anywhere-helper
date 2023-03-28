@@ -1,6 +1,6 @@
 package main
 
-import "github.com/dfds/iam-anywhere-ninja/cmd"
+import "github.com/dfds/roles-anywhere-helper/cmd"
 
 func main() {
 	cmd.Execute()

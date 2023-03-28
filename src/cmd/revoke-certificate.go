@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/dfds/iam-anywhere-ninja/acmpcaService"
-	"github.com/dfds/iam-anywhere-ninja/argsValidationHandler"
-	"github.com/dfds/iam-anywhere-ninja/flags"
-	"github.com/dfds/iam-anywhere-ninja/revocationReasons"
+	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/argsValidationHandler"
+	"github.com/dfds/roles-anywhere-helper/flags"
+	"github.com/dfds/roles-anywhere-helper/revocationReasons"
 	"github.com/spf13/cobra"
 )
 

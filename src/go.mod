@@ -1,4 +1,4 @@
-module github.com/dfds/iam-anywhere-ninja
+module github.com/dfds/roles-anywhere-helper
 
 go 1.20
 

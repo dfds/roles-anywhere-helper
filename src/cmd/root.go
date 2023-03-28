@@ -11,7 +11,7 @@ import (
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "iam-anywhere-ninja",
+	Use:   "roles-anywhere-helper",
 	Short: "A CLI tool to help development teams with IAM roles anywhere setup.",
 	Long:  `A CLI tool for to help assist with the setup of IAM roles anywhere on on-premise machines.`,
 }
@@ -25,7 +25,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.iam-anywhere-ninja.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.roles-anywhere-helper.yaml)")
 }
 
 func initConfig() {
@@ -37,7 +37,7 @@ func initConfig() {
 
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".iam-anywhere-ninja")
+		viper.SetConfigName(".roles-anywhere-helper")
 	}
 
 	viper.AutomaticEnv()

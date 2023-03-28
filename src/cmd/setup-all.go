@@ -3,11 +3,11 @@ package cmd
 import (
 	"path/filepath"
 
-	"github.com/dfds/iam-anywhere-ninja/acmService"
-	"github.com/dfds/iam-anywhere-ninja/acmpcaService"
-	"github.com/dfds/iam-anywhere-ninja/credentialService"
-	"github.com/dfds/iam-anywhere-ninja/fileNames"
-	"github.com/dfds/iam-anywhere-ninja/flags"
+	"github.com/dfds/roles-anywhere-helper/acmService"
+	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/credentialService"
+	"github.com/dfds/roles-anywhere-helper/fileNames"
+	"github.com/dfds/roles-anywhere-helper/flags"
 
 	"github.com/spf13/cobra"
 )
