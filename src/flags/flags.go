@@ -16,11 +16,12 @@ const CertificateArn string = "certificate-arn"
 const TrustAnchor string = "trust-anchor-arn"
 const ProfileArn string = "profile-arn"
 const RoleArn string = "role-arn"
-const Region string = "region"
-
+const PcaRegion string = "pca-region"
+const AcmRegion string = "acm-region"
+const RolesAnywhereRegion string = "rolesanywhere-region"
 const AcmpcaArn string = "acmpca-arn"
 
-// X.509 certificate flags attributes flags 
+// X.509 certificate flags attributes flags
 const CommonName string = "common-name"
 const OrganizationName string = "organization-name"
 const OrganizationalUnit string = "organizational-unit"
