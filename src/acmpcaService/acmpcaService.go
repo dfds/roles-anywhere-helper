@@ -11,9 +11,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/acm"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
-	"github.com/dfds/iam-anywhere-ninja/awsService"
-	"github.com/dfds/iam-anywhere-ninja/certificateHandler"
-	"github.com/dfds/iam-anywhere-ninja/fileNames"
+	"github.com/dfds/roles-anywhere-helper/awsService"
+	"github.com/dfds/roles-anywhere-helper/certificateHandler"
+	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
 func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory string) string {

@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/service/acm"
-	"github.com/dfds/iam-anywhere-ninja/awsService"
-	"github.com/dfds/iam-anywhere-ninja/fileNames"
+	"github.com/dfds/roles-anywhere-helper/awsService"
+	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
 func ImportCertificate(profileName, certificateDirectory string) string {

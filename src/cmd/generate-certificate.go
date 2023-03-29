@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/dfds/iam-anywhere-ninja/acmpcaService"
-	"github.com/dfds/iam-anywhere-ninja/flags"
+	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/flags"
 
 	"github.com/spf13/cobra"
 )
