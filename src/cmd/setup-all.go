@@ -39,6 +39,7 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	country, _ := cmd.Flags().GetString(flags.Country)
 	locality, _ := cmd.Flags().GetString(flags.Locality)
 	province, _ := cmd.Flags().GetString(flags.Province)
+	expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
 	certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 
@@ -52,7 +53,7 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	profileNameRoles, _ := cmd.Flags().GetString(flags.ProfileNameRolesAnywhere)
 	region, _ := cmd.Flags().GetString(flags.Region)
 
-	acmpcaService.GenerateCertificate(profileNameAcmPca, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory)
+	acmpcaService.GenerateCertificate(profileNameAcmPca, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, expiryDays)
 	acmService.ImportCertificate(profileNameAcm, certificateDirectory)
 
 	var certificatePath = filepath.Join(certificateDirectory, fileNames.Certificate)
@@ -80,6 +81,7 @@ func setupAllCmdFlags(cmd *cobra.Command) {
 	cmd.Flags().String(flags.ProfileArn, "", flags.ProfileArnDesc)
 	cmd.Flags().String(flags.RoleArn, "", flags.RoleArnDesc)
 	cmd.Flags().String(flags.Region, "eu-east-1", flags.RegionDesc)
+	cmd.Flags().Int64(flags.CertificateExpiryDays, 365, flags.CertificateExpiryDaysDesc)
 
 	cmd.MarkFlagRequired(flags.CommonName)
 	cmd.MarkFlagRequired(flags.AcmpcaArn)

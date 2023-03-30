@@ -23,8 +23,9 @@ var rotateCertificateCmd = &cobra.Command{
 		locality, _ := cmd.Flags().GetString(flags.Locality)
 		province, _ := cmd.Flags().GetString(flags.Province)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
+		expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory)
+		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, expiryDays)
 		acmService.ImportCertificate(profileName, certificateDirectory)
 		acmpcaService.RevokeCertificate(profileName, certArn, acmpcaArn, revocationReasons.Superseded)
 	},
@@ -43,6 +44,7 @@ func init() {
 	rotateCertificateCmd.PersistentFlags().StringP(flags.Country, "k", "", "The country name for the X509 certificate")
 	rotateCertificateCmd.PersistentFlags().StringP(flags.Locality, "l", "", "The locality name for the X509 certificate")
 	rotateCertificateCmd.PersistentFlags().StringP(flags.Province, "s", "", "The state or province name for the X509 certificate")
+	rotateCertificateCmd.PersistentFlags().Int64P(flags.CertificateExpiryDays, "e", 365, flags.CertificateExpiryDaysDesc)
 
 	cobra.MarkFlagRequired(rotateCertificateCmd.PersistentFlags(), flags.CertificateArn)
 	cobra.MarkFlagRequired(rotateCertificateCmd.PersistentFlags(), flags.AcmpcaArn)
