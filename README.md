@@ -1,3 +1,6 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/dfds/roles-anywhere-helper)](https://goreportcard.com/report/github.com/dfds/roles-anywhere-helper)
+
+
 # iam-anywhere-ninja
 
 ## Introduction
@@ -31,6 +34,42 @@ The purpose of this CLI is to make it easy for development teams to configure, r
 #### configure-credential
 
 #### setup-all
+
+```
+$ ./roles-anywhere-helper help setup-all 
+
+Setup the whole process of configuring AWS IAM Roles Anywhere.
+                List of operations:
+                        - Generates certificate and issues that in AWS ACM PCA.
+                        - Imports certificate into AWS ACM.
+                        - Configures AWS profile in credentials file to use AWS Signing Helper with created certificate.
+
+Usage:
+  roles-anywhere-helper setup-all [flags]
+
+Flags:
+      --acm-region string                    Name of the region to be used for access to the ACM (default "eu-east-1")
+      --acmpca-arn string                    ARN of the private CA that issues the certificate
+      --certificate-directory string         Path of the certificate directory on the machine
+      --common-name string                   The common name for the X509 certificate
+      --country string                       The country name for the X509 certificate
+  -h, --help                                 help for setup-all
+      --locality string                      The locality name for the X509 certificate
+      --organization-name string             The organization name for the X509 certificate
+      --organizational-unit string           The organization unit for the X509 certificate
+      --pca-region string                    Name of the region to be used for access to the PCA (default "eu-east-1")
+      --profile-arn string                   The Arn of the AWS IAM roles Anywhere profile
+      --profile-name-acm string              Name of the profile to be used for access to the ACM (default "default")
+      --profile-name-pca string              Name of the profile to be used for access to the PCA (default "default")
+      --profile-name-roles-anywhere string   Name of the profile to that the credentials will be created under (default "roles-anywhere")
+      --province string                      The state or province name for the X509 certificate
+      --role-arn string                      The Arn of the role to be assumed with AWS IAM roles Anywhere
+      --rolesanywhere-region string          Name of the region to that the credentials will be created under (default "eu-east-1")
+      --trust-anchor-arn string              The Arn of the AWS IAM roles anywhere trust anchor
+
+Global Flags:
+      --config string   config file (default is $HOME/.roles-anywhere-helper.yaml)
+```
 
 #### generate-certificate
 
