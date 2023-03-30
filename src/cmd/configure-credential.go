@@ -34,7 +34,6 @@ func init() {
 	configureCmd.PersistentFlags().StringP(flags.ProfileArn, "p", "", "The Arn of the AWS IAM roles Anywhere profile")
 	configureCmd.PersistentFlags().StringP(flags.RoleArn, "i", "", "The Arn of the role to be assumed with AWS IAM roles Anywhere")
 	configureCmd.PersistentFlags().StringP(flags.Region, "r", "eu-east-1", "The region for the credential profile")
-	configureCmd.PersistentFlags().StringP(flags.Region, "r", "eu-east-1", "The region for the credential profile")
 
 	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.CertificatePath)
 	cobra.MarkFlagRequired(configureCmd.PersistentFlags(), flags.PrivateKeyPath)
