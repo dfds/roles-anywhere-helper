@@ -16,7 +16,7 @@ import (
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
-func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory string) string {
+func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory string, expiryDays int64) string {
 
 	ctx, cfg := awsService.ConfigureAws(profileName)
 	println("Generating new certificate")
@@ -31,7 +31,7 @@ func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, o
 		SigningAlgorithm:        "SHA256WITHRSA",
 		Validity: &types.Validity{
 			Type:  "DAYS",
-			Value: aws.Int64(6),
+			Value: aws.Int64(expiryDays),
 		},
 	})
 	if err != nil {

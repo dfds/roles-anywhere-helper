@@ -20,7 +20,7 @@ const Region string = "region"
 
 const AcmpcaArn string = "acmpca-arn"
 
-// X.509 certificate flags attributes flags 
+// X.509 certificate flags attributes flags
 const CommonName string = "common-name"
 const OrganizationName string = "organization-name"
 const OrganizationalUnit string = "organizational-unit"
@@ -29,3 +29,4 @@ const Locality string = "locality"
 const Province string = "province"
 
 const RevocationReason string = "revocation-reason"
+const CertificateExpiryDays string = "certificate-expiry-days"

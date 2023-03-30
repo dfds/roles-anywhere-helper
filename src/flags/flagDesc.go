@@ -27,3 +27,4 @@ const ProvinceDesc string = "The state or province name for the X509 certificate
 
 // Revocation flags description
 const RevocReasonDesc string = "Reason why the certificate is revoked"
+const CertificateExpiryDaysDesc string = "Number of days in which the certificate should expire"

@@ -21,8 +21,9 @@ var getCertificateCmd = &cobra.Command{
 		locality, _ := cmd.Flags().GetString(flags.Locality)
 		province, _ := cmd.Flags().GetString(flags.Province)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
+		expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory)
+		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, expiryDays)
 	},
 }
 
@@ -37,6 +38,7 @@ func init() {
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "Arn for the ACM PCA")
 	getCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Profile of the ACM PCA")
 	getCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
+	getCertificateCmd.PersistentFlags().Int64P(flags.CertificateExpiryDays, "e", 365, flags.CertificateExpiryDaysDesc)
 
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CommonName)
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.AcmpcaArn)
