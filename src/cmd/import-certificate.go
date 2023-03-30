@@ -14,7 +14,8 @@ var importCertificateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
-		acmService.ImportCertificate(profileName, certificateDirectory)
+		_, err := acmService.ImportCertificate(profileName, certificateDirectory)
+		cobra.CheckErr(err)
 	},
 }
 

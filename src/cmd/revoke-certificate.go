@@ -24,7 +24,8 @@ var revokeCertificateCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		acmpcaService.RevokeCertificate(profileName, certArn, pcaArn, revocationReason)
+		_, err = acmpcaService.RevokeCertificate(profileName, certArn, pcaArn, revocationReason)
+		cobra.CheckErr(err)
 	},
 }
 
