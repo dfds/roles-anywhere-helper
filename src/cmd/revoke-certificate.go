@@ -12,7 +12,7 @@ import (
 
 var revokeCertificateCmd = &cobra.Command{
 	Use:   "revoke-certificate",
-	Short: "revoke certificate",
+	Short: "Revoke certificate",
 	Long:  `Revokes the certificate`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
