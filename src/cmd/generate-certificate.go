@@ -22,13 +22,15 @@ var getCertificateCmd = &cobra.Command{
 		province, _ := cmd.Flags().GetString(flags.Province)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 		region, _ := cmd.Flags().GetString(flags.PcaRegion)
+    expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region)
+		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(getCertificateCmd)
+
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationalUnit, "u", "", flags.OrgUnitDesc)
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "o", "", flags.OrgNameDesc)
 	getCertificateCmd.PersistentFlags().StringP(flags.CommonName, "n", "", flags.CommonNameDesc)
@@ -39,6 +41,7 @@ func init() {
 	getCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
 	getCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", flags.CertDirDesc)
 	getCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
+  getCertificateCmd.PersistentFlags().Int64P(flags.CertificateExpiryDays, "e", 365, flags.CertificateExpiryDaysDesc)
 
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CommonName)
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.AcmpcaArn)

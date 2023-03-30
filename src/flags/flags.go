@@ -30,3 +30,4 @@ const Locality string = "locality"
 const Province string = "province"
 
 const RevocationReason string = "revocation-reason"
+const CertificateExpiryDays string = "certificate-expiry-days"
