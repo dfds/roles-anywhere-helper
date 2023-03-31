@@ -24,3 +24,20 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+      
+      - name: Install dependencies
+        run: |
+          go version
+          go get -u golang.org/x/lint/golint
+        
+      - name: Run build
+        run: go build ./src
+      
+      - name: Run vet & lint
+        run: |
+          go vet ./src
+          golint ./src
+    
+      - name: Run testing
+        run: cd src && go test -v
+    
