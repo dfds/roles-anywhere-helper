@@ -13,8 +13,8 @@ import (
 
 var revokeCertificateCmd = &cobra.Command{
 	Use:   "revoke-certificate",
-	Short: "Revoke certificate",
-	Long:  `Revokes the certificate`,
+	Short: "Revoke a certificate in AWS PCA",
+	Long:  `Allow to revoke and provided a reason as to why a certificate is revoked in AWS PCA`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		certArn, _ := cmd.Flags().GetString(flags.CertificateArn)

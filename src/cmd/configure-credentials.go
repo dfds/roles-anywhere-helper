@@ -8,7 +8,7 @@ import (
 )
 
 var configureCmd = &cobra.Command{
-	Use:   "configure-credential",
+	Use:   "configure-credentials",
 	Short: "Configures your local AWS credential file for IAM roles anywhere",
 	Long:  `Configure your local AWS credential file for IAM roles using a aws_signing_helper process`,
 	Run: func(cmd *cobra.Command, args []string) {
