@@ -16,18 +16,25 @@ import (
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
-func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region string, expiryDays int64) string {
+func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region string, expiryDays int64) (string, error) {
 
 	ctx, cfg := awsService.ConfigureAws(creds, region)
 	println("Generating new certificate")
 
-	privateKey := certificateHandler.GeneratePrivateKey()
+	privateKey, err := certificateHandler.GeneratePrivateKey()
+	if err != nil {
+		return "", err
+	}
+	csrPem, err := certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, country, locality, province, privateKey)
+	if err != nil {
+		return "", err
+	}
 
 	acmPCA := acmpca.NewFromConfig(cfg)
 
 	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
-		Csr:                     certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, country, locality, province, privateKey),
+		Csr:                     csrPem,
 		SigningAlgorithm:        "SHA256WITHRSA",
 		Validity: &types.Validity{
 			Type:  "DAYS",
@@ -36,7 +43,7 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 	})
 	if err != nil {
 		fmt.Println("Failed to issue certificate:", err)
-		panic(err)
+		return "", err
 	}
 
 	waiter := acmpca.NewCertificateIssuedWaiter(acmPCA)
@@ -51,7 +58,7 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 	)
 	if err != nil {
 		fmt.Println("Failed to get certificate data:", err)
-		panic(err)
+		return "", err
 	}
 
 	fmt.Printf("Creating certificate files.... in %s", certificateDirectory)
@@ -63,7 +70,7 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 	certArn := *certResp.CertificateArn
 	println("---------- CertificateArn -----------")
 	println(certArn)
-	return certArn
+	return certArn, nil
 }
 
 func RevokeCertificate(creds awsService.AwsCredentialsObject, certArn, pcaArn, revocationReason, region string) (string, error) {

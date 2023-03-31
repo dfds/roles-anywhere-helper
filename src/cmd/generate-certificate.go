@@ -31,7 +31,8 @@ var getCertificateCmd = &cobra.Command{
 
 		creds := awsService.NewAwsCredentialsObject(accessKey, secretAccessKey, sessionToken, profileName)
 
-		acmpcaService.GenerateCertificate(creds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
+		_, err := acmpcaService.GenerateCertificate(creds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
+		cobra.CheckErr(err)
 	},
 }
 

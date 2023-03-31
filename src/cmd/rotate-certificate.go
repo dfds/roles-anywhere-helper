@@ -39,9 +39,13 @@ var rotateCertificateCmd = &cobra.Command{
 
 		acmCreds := awsService.NewAwsCredentialsObject(accessKeyAcm, secretAccessKeyAcm, sessionTokenAcm, profileNameAcm)
 		acmPcaCreds := awsService.NewAwsCredentialsObject(accessKeyPca, secretAccessKeyPca, sessionTokenPca, profileNamePca)
-		acmpcaService.GenerateCertificate(acmPcaCreds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, acmPcaRegion, expiryDays)
-		acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
-		acmpcaService.RevokeCertificate(acmPcaCreds, certArn, acmpcaArn, revocationReasons.Superseded, acmPcaRegion)
+
+		_, err := acmpcaService.GenerateCertificate(acmPcaCreds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, acmPcaRegion, expiryDays)
+		cobra.CheckErr(err)
+		_, err = acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
+		cobra.CheckErr(err)
+		_, err = acmpcaService.RevokeCertificate(acmPcaCreds, certArn, acmpcaArn, revocationReasons.Superseded, acmPcaRegion)
+		cobra.CheckErr(err)
 	},
 }
 

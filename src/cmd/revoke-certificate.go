@@ -30,8 +30,11 @@ var revokeCertificateCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
+
 		creds := awsService.NewAwsCredentialsObject(accessKey, secretAccessKey, sessionToken, profileName)
-		acmpcaService.RevokeCertificate(creds, certArn, pcaArn, revocationReason, region)
+		_, err = acmpcaService.RevokeCertificate(creds, certArn, pcaArn, revocationReason, region)
+		cobra.CheckErr(err)
+
 	},
 }
 

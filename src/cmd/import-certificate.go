@@ -21,7 +21,9 @@ var importCertificateCmd = &cobra.Command{
 		sessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcm)
 
 		creds := awsService.NewAwsCredentialsObject(accessKey, secretAccessKey, sessionToken, profileName)
-		acmService.ImportCertificate(creds, certificateDirectory, region)
+
+		_, err := acmService.ImportCertificate(creds, certificateDirectory, region)
+		cobra.CheckErr(err)
 	},
 }
 

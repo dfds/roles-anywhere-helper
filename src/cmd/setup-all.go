@@ -66,8 +66,11 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	acmCreds := awsService.NewAwsCredentialsObject(acmAccessKey, acmSecretAccessKey, acmSessionToken, profileNameAcm)
 	acmPcaCreds := awsService.NewAwsCredentialsObject(acmPcaAccessKey, acmPcaSecretAccessKey, acmPcaSessionToken, profileNameAcmPca)
 
-	acmpcaService.GenerateCertificate(acmPcaCreds, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
-	acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
+	_, err := acmpcaService.GenerateCertificate(acmPcaCreds, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
+	cobra.CheckErr(err)
+
+	_, err = acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
+	cobra.CheckErr(err)
 
 	var certificatePath = filepath.Join(certificateDirectory, fileNames.Certificate)
 	var privateKeyPath = filepath.Join(certificateDirectory, fileNames.PrivateKey)
