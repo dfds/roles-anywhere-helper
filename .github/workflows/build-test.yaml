@@ -44,5 +44,5 @@ jobs:
       - name: Run testing
         run: |
           cd src 
-          go test -v
+          go test -v ./...
     
