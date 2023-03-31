@@ -55,8 +55,11 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	pcaRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmPcaDesc)
 	acmRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmDesc)
 
-	acmpcaService.GenerateCertificate(profileNameAcmPca, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
-	acmService.ImportCertificate(profileNameAcm, certificateDirectory, acmRegion)
+	_, err := acmpcaService.GenerateCertificate(profileNameAcmPca, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
+	cobra.CheckErr(err)
+
+	_, err = acmService.ImportCertificate(profileNameAcm, certificateDirectory, acmRegion)
+	cobra.CheckErr(err)
 
 	var certificatePath = filepath.Join(certificateDirectory, fileNames.Certificate)
 	var privateKeyPath = filepath.Join(certificateDirectory, fileNames.PrivateKey)

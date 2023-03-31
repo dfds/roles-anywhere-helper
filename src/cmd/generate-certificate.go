@@ -24,7 +24,8 @@ var getCertificateCmd = &cobra.Command{
 		region, _ := cmd.Flags().GetString(flags.PcaRegion)
     expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
+		_, err := acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
+		cobra.CheckErr(err)
 	},
 }
 

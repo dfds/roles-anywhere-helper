@@ -27,9 +27,12 @@ var rotateCertificateCmd = &cobra.Command{
 		acmPcaRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmPcaDesc)
     expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, acmPcaRegion, expiryDays)
-		acmService.ImportCertificate(profileName, certificateDirectory, acmRegion)
-		acmpcaService.RevokeCertificate(profileName, certArn, acmpcaArn, revocationReasons.Superseded, acmPcaRegion)
+		_, err := acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, acmPcaRegion, expiryDays)
+		cobra.CheckErr(err)
+		_, err = acmService.ImportCertificate(profileName, certificateDirectory, acmRegion)
+		cobra.CheckErr(err)
+		_, err = acmpcaService.RevokeCertificate(profileName, certArn, acmpcaArn, revocationReasons.Superseded, acmPcaRegion)
+		cobra.CheckErr(err)
 	},
 }
 

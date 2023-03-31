@@ -12,12 +12,12 @@ import (
 	"github.com/dfds/roles-anywhere-helper/fileHandler"
 )
 
-func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName string) {
-	
-	fileOut, err := fileHandler.CreateFile(filepath.Join(directory, fileName))
+func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName string) error {
+
+	fileOut, err := os.Create(directory + fileName)
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	defer fileOut.Close()
@@ -25,14 +25,15 @@ func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName st
 	pem.Encode(fileOut, pemData)
 
 	fmt.Printf("%s created", fileName)
+	return nil
 }
 
-func CreatePemFileFromString(pemData string, directory string, fileName string) {
+func CreatePemFileFromString(pemData string, directory string, fileName string) error {
 
 	fileOut, err := fileHandler.CreateFile(filepath.Join(directory, fileName))
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	defer fileOut.Close()
@@ -40,31 +41,32 @@ func CreatePemFileFromString(pemData string, directory string, fileName string) 
 	fileOut.WriteString(pemData)
 
 	fmt.Printf("%s created", fileName)
+	return nil
 }
 
-func CreateCsrPEM(commonName string, organizationName string, organizationalUnit string, country string, locality string, province string, privateKey *rsa.PrivateKey) []byte {
-	csrTemplate := GenerateCsrTemplate(commonName, organizationName, organizationalUnit, country, locality, province)
+func CreateCsrPEM(commonName string, organizationName string, organizationalUnit string, country string, locality string, province string, privateKey *rsa.PrivateKey) ([]byte, error) {
+	csrTemplate := generateCsrTemplate(commonName, organizationName, organizationalUnit, country, locality, province)
 
 	csrBytes, err := x509.CreateCertificateRequest(rand.Reader, &csrTemplate, privateKey)
 	if err != nil {
 		fmt.Println("Failed to create CSR:", err)
-		panic(err)
+		return nil, err
 	}
 
 	csrPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csrBytes})
-	return csrPEM
+	return csrPEM, nil
 }
 
-func GeneratePrivateKey() *rsa.PrivateKey {
+func GeneratePrivateKey() (*rsa.PrivateKey, error) {
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		fmt.Println("acme: Failed to generate private key:", err)
-		panic(err)
+		return nil, err
 	}
-	return key
+	return key, nil
 }
 
-func GenerateCsrTemplate(commonName string, organizationName string, organizationalUnit string, country string, locality string, province string) x509.CertificateRequest {
+func generateCsrTemplate(commonName string, organizationName string, organizationalUnit string, country string, locality string, province string) x509.CertificateRequest {
 	csrTemplate := x509.CertificateRequest{
 		Subject: pkix.Name{
 			CommonName:         commonName,
