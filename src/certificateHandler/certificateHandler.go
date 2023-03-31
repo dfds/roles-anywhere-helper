@@ -7,6 +7,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/dfds/roles-anywhere-helper/fileHandler"
