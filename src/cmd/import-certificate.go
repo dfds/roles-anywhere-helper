@@ -10,8 +10,8 @@ import (
 
 var importCertificateCmd = &cobra.Command{
 	Use:   "import-certificate",
-	Short: "Uploads a certificate to ACM",
-	Long:  `Adds your certificate to ACM`,
+	Short: "Imports a certificate into AWS ACM",
+	Long:  `Allow to import a certificate into AWS ACM`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)

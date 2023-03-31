@@ -10,8 +10,8 @@ import (
 
 var getCertificateCmd = &cobra.Command{
 	Use:   "generate-certificate",
-	Short: "Generate certificate",
-	Long:  `Generate certificate`,
+	Short: "Generates a X509 certificate and issues with AWS PCM",
+	Long:  `Generates a Sha256 X509 certificate and issues with AWS PCM, It will then store the certificate files on the drive`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		acmpcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
