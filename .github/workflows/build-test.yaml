@@ -28,18 +28,18 @@ jobs:
       - name: Install dependencies
         run: |
           cd src
+          go get .
           go version
-          go get -u golang.org/x/lint/golint
+
+      - name: Run vet
+        run: |
+          cd src
+          go vet .
         
       - name: Run build
         run: |
           cd src
           go build .
-      
-      - name: Run vet & lint
-        run: |
-          cd src
-          go vet .
     
       - name: Run testing
         run: |
