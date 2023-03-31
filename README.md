@@ -1,6 +1,3 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/dfds/roles-anywhere-helper)](https://goreportcard.com/report/github.com/dfds/roles-anywhere-helper)
-
-
 # roles-anywhere-helper
 
 ## Introduction
