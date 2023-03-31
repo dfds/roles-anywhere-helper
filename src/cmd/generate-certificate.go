@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/awsService"
 	"github.com/dfds/roles-anywhere-helper/flags"
 
 	"github.com/spf13/cobra"
@@ -22,15 +23,27 @@ var getCertificateCmd = &cobra.Command{
 		province, _ := cmd.Flags().GetString(flags.Province)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
 		region, _ := cmd.Flags().GetString(flags.PcaRegion)
-    expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
+		expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		_, err := acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
+		accessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcmPca)
+		secretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcmPca)
+		sessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcmPca)
+
+		creds := awsService.NewAwsCredentialsObject(accessKey, secretAccessKey, sessionToken, profileName)
+
+		_, err := acmpcaService.GenerateCertificate(creds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region, expiryDays)
 		cobra.CheckErr(err)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(getCertificateCmd)
+
+	getCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
+	getCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
+	getCertificateCmd.PersistentFlags().String(flags.AccessKeyAcmPca, "", flags.AccessKeyAcmPcaDesc)
+	getCertificateCmd.PersistentFlags().String(flags.SecretAccessKeyAcmPca, "", flags.SecretAccessKeyAcmPcaDesc)
+	getCertificateCmd.PersistentFlags().String(flags.SessionTokenAcmPca, "", flags.SessionTokenAcmPcaDesc)
 
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationalUnit, "u", "", flags.OrgUnitDesc)
 	getCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "o", "", flags.OrgNameDesc)
@@ -39,10 +52,8 @@ func init() {
 	getCertificateCmd.PersistentFlags().StringP(flags.Locality, "l", "", flags.LocalityDesc)
 	getCertificateCmd.PersistentFlags().StringP(flags.Province, "s", "", flags.Province)
 	getCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", flags.AcmPcaArnDesc)
-	getCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
 	getCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", flags.CertDirDesc)
-	getCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
-  getCertificateCmd.PersistentFlags().Int64P(flags.CertificateExpiryDays, "e", 365, flags.CertificateExpiryDaysDesc)
+	getCertificateCmd.PersistentFlags().Int64P(flags.CertificateExpiryDays, "e", 365, flags.CertificateExpiryDaysDesc)
 
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.CommonName)
 	cobra.MarkFlagRequired(getCertificateCmd.PersistentFlags(), flags.AcmpcaArn)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/dfds/roles-anywhere-helper/acmService"
 	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/awsService"
 	"github.com/dfds/roles-anywhere-helper/credentialService"
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 	"github.com/dfds/roles-anywhere-helper/flags"
@@ -17,7 +18,7 @@ var setupAllCmd = getSetupAllCmd()
 func getSetupAllCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "setup-all",
-		Short: "Generate certificate, Import Certificate, Configure Credentials",
+		Short: "Generate certificate, import it to ACm and configure credentials",
 		Long: `Setup the whole process of configuring AWS IAM Roles Anywhere.
 		List of operations:
 			- Generates certificate and issues that in AWS ACM PCA.
@@ -55,10 +56,20 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	pcaRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmPcaDesc)
 	acmRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmDesc)
 
-	_, err := acmpcaService.GenerateCertificate(profileNameAcmPca, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
+	acmAccessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcm)
+	acmSecretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcm)
+	acmSessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcm)
+	acmPcaAccessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcmPca)
+	acmPcaSecretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcmPca)
+	acmPcaSessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcmPca)
+
+	acmCreds := awsService.NewAwsCredentialsObject(acmAccessKey, acmSecretAccessKey, acmSessionToken, profileNameAcm)
+	acmPcaCreds := awsService.NewAwsCredentialsObject(acmPcaAccessKey, acmPcaSecretAccessKey, acmPcaSessionToken, profileNameAcmPca)
+
+	_, err := acmpcaService.GenerateCertificate(acmPcaCreds, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
 	cobra.CheckErr(err)
 
-	_, err = acmService.ImportCertificate(profileNameAcm, certificateDirectory, acmRegion)
+	_, err = acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
 	cobra.CheckErr(err)
 
 	var certificatePath = filepath.Join(certificateDirectory, fileNames.Certificate)
@@ -88,7 +99,14 @@ func setupAllCmdFlags(cmd *cobra.Command) {
 	cmd.Flags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
 	cmd.Flags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
 	cmd.Flags().String(flags.RolesAnywhereRegion, "eu-east-1", flags.RegionNameRolesAnywhereDesc)
-  cmd.Flags().Int64(flags.CertificateExpiryDays, 365, flags.CertificateExpiryDaysDesc)
+	cmd.Flags().Int64(flags.CertificateExpiryDays, 365, flags.CertificateExpiryDaysDesc)
+
+	cmd.Flags().String(flags.AccessKeyAcm, "", flags.AccessKeyAcmDesc)
+	cmd.Flags().String(flags.SecretAccessKeyAcm, "", flags.SecretAccessKeyAcmDesc)
+	cmd.Flags().String(flags.SessionTokenAcm, "", flags.SessionTokenAcmDesc)
+	cmd.Flags().String(flags.AccessKeyAcmPca, "", flags.AccessKeyAcmPcaDesc)
+	cmd.Flags().String(flags.SecretAccessKeyAcmPca, "", flags.SecretAccessKeyAcmPcaDesc)
+	cmd.Flags().String(flags.SessionTokenAcmPca, "", flags.SessionTokenAcmPcaDesc)
 
 	cmd.MarkFlagRequired(flags.CommonName)
 	cmd.MarkFlagRequired(flags.AcmpcaArn)

@@ -19,3 +19,5 @@ dist/
 .dccache
 *.pem
 *.key
+
+roles-anywhere-helper

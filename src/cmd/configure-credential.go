@@ -9,8 +9,8 @@ import (
 
 var configureCmd = &cobra.Command{
 	Use:   "configure-credential",
-	Short: "Configure your AWS credential file for iam roles",
-	Long:  `Configure your AWS credential file for iam roles using a basic model`,
+	Short: "Configures your local AWS credential file for IAM roles anywhere",
+	Long:  `Configure your local AWS credential file for IAM roles using a aws_signing_helper process`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
 		certificatePath, _ := cmd.Flags().GetString(flags.CertificatePath)

@@ -6,6 +6,18 @@ const ProfileNameAcm = ProfileName + "-acm"
 const ProfileNameAcmPca = ProfileName + "-pca"
 const ProfileNameRolesAnywhere = ProfileName + "-roles-anywhere"
 
+const accessKey string = "access-key"
+const AccessKeyAcm = accessKey + "-acm"
+const AccessKeyAcmPca = accessKey + "-pca"
+
+const SecretAccessKey string = "secret-access-key"
+const SecretAccessKeyAcm = SecretAccessKey + "-acm"
+const SecretAccessKeyAcmPca = SecretAccessKey + "-pca"
+
+const SessionToken string = "session-token"
+const SessionTokenAcm = SessionToken + "-acm"
+const SessionTokenAcmPca = SessionToken + "-pca"
+
 // Certificate flags
 const CertificateDirectory string = "certificate-directory"
 const CertificatePath string = "certificate-path"

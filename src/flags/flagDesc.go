@@ -13,9 +13,9 @@ const PrivKeyPathDesc string = "Path of the private key on the machine"
 const CertArnDesc string = "ARN of the certificate to be revoked"
 
 // // IAM Roles Anywhere flags description
-const TrustAnchorArnDesc string = "The Arn of the AWS IAM roles anywhere trust anchor"
-const ProfileArnDesc string = "The Arn of the AWS IAM roles Anywhere profile"
-const RoleArnDesc string = "The Arn of the role to be assumed with AWS IAM roles Anywhere"
+const TrustAnchorArnDesc string = "ARN of the AWS IAM roles anywhere trust anchor"
+const ProfileArnDesc string = "ARN of the AWS IAM roles anywhere profile"
+const RoleArnDesc string = "ARN of the role to be assumed with AWS IAM roles Anywhere"
 const AcmPcaArnDesc string = "ARN of the private CA that issues the certificate"
 const RegionNameRolesAnywhereDesc string = "Name of the region to that the credentials will be created under"
 
@@ -30,3 +30,16 @@ const ProvinceDesc string = "The state or province name for the X509 certificate
 // Revocation flags description
 const RevocReasonDesc string = "Reason why the certificate is revoked"
 const CertificateExpiryDaysDesc string = "Number of days in which the certificate should expire"
+
+// Cred Flags
+const accessKeyDesc string = "AWS credentials access key"
+const AccessKeyAcmDesc = accessKeyDesc + " for the Acm"
+const AccessKeyAcmPcaDesc = accessKeyDesc + "for the Acm Pca"
+
+const secretAccessKeyDesc string = "AWS credentials secret access key"
+const SecretAccessKeyAcmDesc = secretAccessKeyDesc + " for the Acm"
+const SecretAccessKeyAcmPcaDesc = secretAccessKeyDesc + "for the Acm Pca"
+
+const sessionTokenDesc string = "AWS credentials session token"
+const SessionTokenAcmDesc = sessionTokenDesc + " for the Acm"
+const SessionTokenAcmPcaDesc = sessionTokenDesc + "for the Acm Pca"

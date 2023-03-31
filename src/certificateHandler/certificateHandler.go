@@ -14,7 +14,7 @@ import (
 
 func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName string) error {
 
-	fileOut, err := os.Create(directory + fileName)
+	fileOut, err := fileHandler.CreateFile(filepath.Join(directory, fileName))
 
 	if err != nil {
 		return err
