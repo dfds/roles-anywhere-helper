@@ -11,32 +11,39 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/acm"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
-	"github.com/dfds/iam-anywhere-ninja/awsService"
-	"github.com/dfds/iam-anywhere-ninja/certificateHandler"
-	"github.com/dfds/iam-anywhere-ninja/fileNames"
+	"github.com/dfds/roles-anywhere-helper/awsService"
+	"github.com/dfds/roles-anywhere-helper/certificateHandler"
+	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
-func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory string) string {
+func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region string, expiryDays int64) (string, error) {
 
-	ctx, cfg := awsService.ConfigureAws(profileName)
+	ctx, cfg := awsService.ConfigureAws(creds, region)
 	println("Generating new certificate")
 
-	privateKey := certificateHandler.GeneratePrivateKey()
+	privateKey, err := certificateHandler.GeneratePrivateKey()
+	if err != nil {
+		return "", err
+	}
+	csrPem, err := certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, country, locality, province, privateKey)
+	if err != nil {
+		return "", err
+	}
 
 	acmPCA := acmpca.NewFromConfig(cfg)
 
 	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
-		Csr:                     certificateHandler.CreateCsrPEM(commonName, organizationName, organizationalUnit, country, locality, province, privateKey),
+		Csr:                     csrPem,
 		SigningAlgorithm:        "SHA256WITHRSA",
 		Validity: &types.Validity{
 			Type:  "DAYS",
-			Value: aws.Int64(6),
+			Value: aws.Int64(expiryDays),
 		},
 	})
 	if err != nil {
 		fmt.Println("Failed to issue certificate:", err)
-		panic(err)
+		return "", err
 	}
 
 	waiter := acmpca.NewCertificateIssuedWaiter(acmPCA)
@@ -51,7 +58,7 @@ func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, o
 	)
 	if err != nil {
 		fmt.Println("Failed to get certificate data:", err)
-		panic(err)
+		return "", err
 	}
 
 	fmt.Printf("Creating certificate files.... in %s", certificateDirectory)
@@ -63,12 +70,12 @@ func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, o
 	certArn := *certResp.CertificateArn
 	println("---------- CertificateArn -----------")
 	println(certArn)
-	return certArn
+	return certArn, nil
 }
 
-func RevokeCertificate(profileName, certArn, pcaArn, revocationReason string) (string, error) {
+func RevokeCertificate(creds awsService.AwsCredentialsObject, certArn, pcaArn, revocationReason, region string) (string, error) {
 
-	ctx, cfg := awsService.ConfigureAws(profileName)
+	ctx, cfg := awsService.ConfigureAws(creds, region)
 
 	acmSvc := acm.NewFromConfig(cfg)
 

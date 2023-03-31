@@ -2,7 +2,8 @@ package argsValidationHandler
 
 import (
 	"fmt"
-	"github.com/dfds/iam-anywhere-ninja/revocationReasons"
+
+	"github.com/dfds/roles-anywhere-helper/revocationReasons"
 )
 
 func IsValidRevocationReason(revocationReason string) error {

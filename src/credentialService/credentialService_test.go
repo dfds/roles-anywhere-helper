@@ -9,7 +9,11 @@ import (
 )
 
 func TestGetCredentialsFilePath(t *testing.T) {
-	expected := filepath.Join(os.Getenv("HOME"), ".aws/credentials")
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatal("No access to 'HOME' directory: ", err)
+	}
+	expected := filepath.Join(home, ".aws/credentials")
 	actual := GetCredentialsFilePath()
 	assert.Equal(t, expected, actual)
 }

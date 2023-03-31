@@ -1,19 +1,21 @@
 package cmd
 
 import (
-	"github.com/dfds/iam-anywhere-ninja/acmService"
-	"github.com/dfds/iam-anywhere-ninja/acmpcaService"
-	"github.com/dfds/iam-anywhere-ninja/flags"
-	"github.com/dfds/iam-anywhere-ninja/revocationReasons"
+	"github.com/dfds/roles-anywhere-helper/acmService"
+	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/awsService"
+	"github.com/dfds/roles-anywhere-helper/flags"
+	"github.com/dfds/roles-anywhere-helper/revocationReasons"
 	"github.com/spf13/cobra"
 )
 
 var rotateCertificateCmd = &cobra.Command{
 	Use:   "rotate-certificate",
-	Short: "rotate certificate",
+	Short: "Rotate certificate",
 	Long:  `Rotates the certificate by first creating the new certificate then revokeing the old certificate`,
 	Run: func(cmd *cobra.Command, args []string) {
-		profileName, _ := cmd.Flags().GetString(flags.ProfileName)
+		profileNameAcm, _ := cmd.Flags().GetString(flags.ProfileNameAcm)
+		profileNamePca, _ := cmd.Flags().GetString(flags.ProfileNameAcmPca)
 		certArn, _ := cmd.Flags().GetString(flags.CertificateArn)
 		acmpcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
 		commonName, _ := cmd.Flags().GetString(flags.CommonName)
@@ -23,26 +25,53 @@ var rotateCertificateCmd = &cobra.Command{
 		locality, _ := cmd.Flags().GetString(flags.Locality)
 		province, _ := cmd.Flags().GetString(flags.Province)
 		certificateDirectory, _ := cmd.Flags().GetString(flags.CertificateDirectory)
+		acmRegion, _ := cmd.Flags().GetString(flags.AcmRegion)
+		acmPcaRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmPcaDesc)
+		expiryDays, _ := cmd.Flags().GetInt64(flags.CertificateExpiryDays)
 
-		acmpcaService.GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory)
-		acmService.ImportCertificate(profileName, certificateDirectory)
-		acmpcaService.RevokeCertificate(profileName, certArn, acmpcaArn, revocationReasons.Superseded)
+		accessKeyPca, _ := cmd.Flags().GetString(flags.AccessKeyAcmPca)
+		secretAccessKeyPca, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcmPca)
+		sessionTokenPca, _ := cmd.Flags().GetString(flags.SessionTokenAcmPca)
+
+		accessKeyAcm, _ := cmd.Flags().GetString(flags.AccessKeyAcm)
+		secretAccessKeyAcm, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcm)
+		sessionTokenAcm, _ := cmd.Flags().GetString(flags.SessionTokenAcm)
+
+		acmCreds := awsService.NewAwsCredentialsObject(accessKeyAcm, secretAccessKeyAcm, sessionTokenAcm, profileNameAcm)
+		acmPcaCreds := awsService.NewAwsCredentialsObject(accessKeyPca, secretAccessKeyPca, sessionTokenPca, profileNamePca)
+
+		_, err := acmpcaService.GenerateCertificate(acmPcaCreds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, acmPcaRegion, expiryDays)
+		cobra.CheckErr(err)
+		_, err = acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
+		cobra.CheckErr(err)
+		_, err = acmpcaService.RevokeCertificate(acmPcaCreds, certArn, acmpcaArn, revocationReasons.Superseded, acmPcaRegion)
+		cobra.CheckErr(err)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(rotateCertificateCmd)
 
-	rotateCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", "Name of the profile to be used for access to the PCA")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.CertificateArn, "c", "", "ARN of the certificate to be revoked")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", "ARN of the private CA that issues the certificate")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.OrganizationalUnit, "u", "", "The organization unit for the X509 certificate")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "o", "", "The organization name for the X509 certificate")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.CommonName, "n", "", "The common name for the X509 certificate")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", "Name of the profile to that the credentials will be created under")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.Country, "k", "", "The country name for the X509 certificate")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.Locality, "l", "", "The locality name for the X509 certificate")
-	rotateCertificateCmd.PersistentFlags().StringP(flags.Province, "s", "", "The state or province name for the X509 certificate")
+	rotateCertificateCmd.PersistentFlags().String(flags.ProfileName, "default", flags.ProfNameAcmPcaDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.AccessKeyAcm, "", flags.AccessKeyAcmDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.SecretAccessKeyAcm, "", flags.SecretAccessKeyAcmDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.SessionTokenAcm, "", flags.SessionTokenAcmDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.AccessKeyAcmPca, "", flags.AccessKeyAcmPcaDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.SecretAccessKeyAcmPca, "", flags.SecretAccessKeyAcmPcaDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.SessionTokenAcmPca, "", flags.SessionTokenAcmPcaDesc)
+
+	rotateCertificateCmd.PersistentFlags().StringP(flags.CertificateArn, "c", "", flags.CertArnDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", flags.AcmPcaArnDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.OrganizationalUnit, "u", "", flags.OrgUnitDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.OrganizationName, "o", "", flags.OrgNameDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.CommonName, "n", "", flags.CommonNameDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.CertificateDirectory, "d", "", flags.ProfNameRolesAnywhereDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.Country, "k", "", flags.CountryDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.Locality, "l", "", flags.LocalityDesc)
+	rotateCertificateCmd.PersistentFlags().StringP(flags.Province, "s", "", flags.ProvinceDesc)
+	rotateCertificateCmd.PersistentFlags().Int64P(flags.CertificateExpiryDays, "e", 365, flags.CertificateExpiryDaysDesc)
 
 	cobra.MarkFlagRequired(rotateCertificateCmd.PersistentFlags(), flags.CertificateArn)
 	cobra.MarkFlagRequired(rotateCertificateCmd.PersistentFlags(), flags.AcmpcaArn)

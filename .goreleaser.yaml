@@ -1,4 +1,4 @@
-project_name: iam-anywhere-ninja
+project_name: roles-anywhere-helper
 builds:
   - env: [ ]
     goos:
@@ -8,7 +8,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    id: "iam-anywhere-ninja"
+    id: "roles-anywhere-helper"
     dir: ./src
     main: ./
 
