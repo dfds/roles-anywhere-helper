@@ -2,6 +2,7 @@ package argsValidationHandler
 
 import (
 	"fmt"
+
 	"github.com/dfds/roles-anywhere-helper/revocationReasons"
 )
 
@@ -21,7 +22,7 @@ func IsValidRevocationReason(revocationReason string) error {
 
 	for i := 0; i < len(validReasons); i++ {
 		if validReasons[i] == revocationReason {
-			result = true
+			result = truea
 			break
 		}
 	}
