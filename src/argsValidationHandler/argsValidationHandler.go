@@ -22,7 +22,7 @@ func IsValidRevocationReason(revocationReason string) error {
 
 	for i := 0; i < len(validReasons); i++ {
 		if validReasons[i] == revocationReason {
-			result = truea
+			result = true
 			break
 		}
 	}
