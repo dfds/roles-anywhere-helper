@@ -7,7 +7,6 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/dfds/roles-anywhere-helper/fileHandler"
@@ -15,7 +14,7 @@ import (
 
 func CreatePemFileFromPemBlock(pemData *pem.Block, directory string, fileName string) error {
 
-	fileOut, err := os.Create(directory + fileName)
+	fileOut, err := fileHandler.CreateFile(filepath.Join(directory, fileName))
 
 	if err != nil {
 		return err
