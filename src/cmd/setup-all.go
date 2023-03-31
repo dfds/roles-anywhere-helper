@@ -5,6 +5,7 @@ import (
 
 	"github.com/dfds/roles-anywhere-helper/acmService"
 	"github.com/dfds/roles-anywhere-helper/acmpcaService"
+	"github.com/dfds/roles-anywhere-helper/awsService"
 	"github.com/dfds/roles-anywhere-helper/credentialService"
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 	"github.com/dfds/roles-anywhere-helper/flags"
@@ -55,8 +56,18 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	pcaRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmPcaDesc)
 	acmRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmDesc)
 
-	acmpcaService.GenerateCertificate(profileNameAcmPca, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
-	acmService.ImportCertificate(profileNameAcm, certificateDirectory, acmRegion)
+	acmAccessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcm)
+	acmSecretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcm)
+	acmSessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcm)
+	acmPcaAccessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcmPca)
+	acmPcaSecretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcmPca)
+	acmPcaSessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcmPca)
+
+	acmCreds := awsService.NewAwsCredentialsObject(acmAccessKey, acmSecretAccessKey, acmSessionToken, profileNameAcm)
+	acmPcaCreds := awsService.NewAwsCredentialsObject(acmPcaAccessKey, acmPcaSecretAccessKey, acmPcaSessionToken, profileNameAcmPca)
+
+	acmpcaService.GenerateCertificate(acmPcaCreds, acmPcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
+	acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
 
 	var certificatePath = filepath.Join(certificateDirectory, fileNames.Certificate)
 	var privateKeyPath = filepath.Join(certificateDirectory, fileNames.PrivateKey)
@@ -65,27 +76,34 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 }
 
 func setupAllCmdFlags(cmd *cobra.Command) {
-	cmd.Flags().String(flags.ProfileNameAcmPca, "default", flags.ProfNameAcmPcaDesc)
-	cmd.Flags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
-	cmd.Flags().String(flags.ProfileNameRolesAnywhere, "roles-anywhere", flags.ProfNameRolesAnywhereDesc)
-	cmd.Flags().String(flags.AcmpcaArn, "", flags.AcmPcaArnDesc)
+	cmd.PersistentFlags().String(flags.ProfileNameAcmPca, "default", flags.ProfNameAcmPcaDesc)
+	cmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
+	cmd.PersistentFlags().String(flags.ProfileNameRolesAnywhere, "roles-anywhere", flags.ProfNameRolesAnywhereDesc)
+	cmd.PersistentFlags().String(flags.AcmpcaArn, "", flags.AcmPcaArnDesc)
 
-	cmd.Flags().String(flags.OrganizationalUnit, "", flags.OrgUnitDesc)
-	cmd.Flags().String(flags.OrganizationName, "", flags.OrgNameDesc)
-	cmd.Flags().String(flags.CommonName, "", flags.CommonNameDesc)
-	cmd.Flags().String(flags.Country, "", flags.CountryDesc)
-	cmd.Flags().String(flags.Locality, "", flags.LocalityDesc)
-	cmd.Flags().String(flags.Province, "", flags.ProvinceDesc)
+	cmd.PersistentFlags().String(flags.OrganizationalUnit, "", flags.OrgUnitDesc)
+	cmd.PersistentFlags().String(flags.OrganizationName, "", flags.OrgNameDesc)
+	cmd.PersistentFlags().String(flags.CommonName, "", flags.CommonNameDesc)
+	cmd.PersistentFlags().String(flags.Country, "", flags.CountryDesc)
+	cmd.PersistentFlags().String(flags.Locality, "", flags.LocalityDesc)
+	cmd.PersistentFlags().String(flags.Province, "", flags.ProvinceDesc)
 
-	cmd.Flags().String(flags.CertificateDirectory, "", flags.CertDirDesc)
+	cmd.PersistentFlags().String(flags.CertificateDirectory, "", flags.CertDirDesc)
 
-	cmd.Flags().String(flags.TrustAnchor, "", flags.TrustAnchorArnDesc)
-	cmd.Flags().String(flags.ProfileArn, "", flags.ProfileArnDesc)
-	cmd.Flags().String(flags.RoleArn, "", flags.RoleArnDesc)
-	cmd.Flags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
-	cmd.Flags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
-	cmd.Flags().String(flags.RolesAnywhereRegion, "eu-east-1", flags.RegionNameRolesAnywhereDesc)
-  cmd.Flags().Int64(flags.CertificateExpiryDays, 365, flags.CertificateExpiryDaysDesc)
+	cmd.PersistentFlags().String(flags.TrustAnchor, "", flags.TrustAnchorArnDesc)
+	cmd.PersistentFlags().String(flags.ProfileArn, "", flags.ProfileArnDesc)
+	cmd.PersistentFlags().String(flags.RoleArn, "", flags.RoleArnDesc)
+	cmd.PersistentFlags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
+	cmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
+	cmd.PersistentFlags().String(flags.RolesAnywhereRegion, "eu-east-1", flags.RegionNameRolesAnywhereDesc)
+	cmd.PersistentFlags().Int64(flags.CertificateExpiryDays, 365, flags.CertificateExpiryDaysDesc)
+
+	cmd.PersistentFlags().String(flags.AccessKeyAcm, "", flags.AccessKeyAcmDesc)
+	cmd.PersistentFlags().String(flags.SecretAccessKeyAcm, "", flags.SecretAccessKeyAcmDesc)
+	cmd.PersistentFlags().String(flags.SessionTokenAcm, "", flags.SessionTokenAcmDesc)
+	cmd.PersistentFlags().String(flags.AccessKeyAcmPca, "", flags.AccessKeyAcmPcaDesc)
+	cmd.PersistentFlags().String(flags.SecretAccessKeyAcmPca, "", flags.SecretAccessKeyAcmPcaDesc)
+	cmd.PersistentFlags().String(flags.SessionTokenAcmPca, "", flags.SessionTokenAcmPcaDesc)
 
 	cmd.MarkFlagRequired(flags.CommonName)
 	cmd.MarkFlagRequired(flags.AcmpcaArn)

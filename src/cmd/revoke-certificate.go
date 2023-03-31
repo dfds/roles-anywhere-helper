@@ -5,6 +5,7 @@ import (
 
 	"github.com/dfds/roles-anywhere-helper/acmpcaService"
 	"github.com/dfds/roles-anywhere-helper/argsValidationHandler"
+	"github.com/dfds/roles-anywhere-helper/awsService"
 	"github.com/dfds/roles-anywhere-helper/flags"
 	"github.com/dfds/roles-anywhere-helper/revocationReasons"
 	"github.com/spf13/cobra"
@@ -20,24 +21,32 @@ var revokeCertificateCmd = &cobra.Command{
 		pcaArn, _ := cmd.Flags().GetString(flags.AcmpcaArn)
 		revocationReason, _ := cmd.Flags().GetString(flags.RevocationReason)
 		region, _ := cmd.Flags().GetString(flags.PcaRegion)
+		accessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcmPca)
+		secretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcmPca)
+		sessionToken, _ := cmd.Flags().GetString(flags.SessionTokenAcmPca)
 
 		err := argsValidationHandler.IsValidRevocationReason(revocationReason)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		acmpcaService.RevokeCertificate(profileName, certArn, pcaArn, revocationReason, region)
+		creds := awsService.NewAwsCredentialsObject(accessKey, secretAccessKey, sessionToken, profileName)
+		acmpcaService.RevokeCertificate(creds, certArn, pcaArn, revocationReason, region)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(revokeCertificateCmd)
 
-	revokeCertificateCmd.PersistentFlags().StringP(flags.ProfileName, "p", "default", flags.ProfNameAcmPcaDesc)
+	revokeCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
+	revokeCertificateCmd.PersistentFlags().String(flags.ProfileName, "default", flags.ProfNameAcmPcaDesc)
+	revokeCertificateCmd.PersistentFlags().String(flags.AccessKeyAcmPca, "", flags.AccessKeyAcmPcaDesc)
+	revokeCertificateCmd.PersistentFlags().String(flags.SecretAccessKeyAcmPca, "", flags.SecretAccessKeyAcmPcaDesc)
+	revokeCertificateCmd.PersistentFlags().String(flags.SessionTokenAcmPca, "", flags.SessionTokenAcmPcaDesc)
+
 	revokeCertificateCmd.PersistentFlags().StringP(flags.CertificateArn, "c", "", flags.CertArnDesc)
 	revokeCertificateCmd.PersistentFlags().StringP(flags.AcmpcaArn, "a", "", flags.AcmPcaArnDesc)
 	revokeCertificateCmd.PersistentFlags().StringP(flags.RevocationReason, "r", revocationReasons.Unspecified, flags.RevocReasonDesc)
-	revokeCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
 
 	cobra.MarkFlagRequired(revokeCertificateCmd.PersistentFlags(), flags.CertificateArn)
 	cobra.MarkFlagRequired(revokeCertificateCmd.PersistentFlags(), flags.AcmpcaArn)

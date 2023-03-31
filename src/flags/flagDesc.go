@@ -30,3 +30,16 @@ const ProvinceDesc string = "The state or province name for the X509 certificate
 // Revocation flags description
 const RevocReasonDesc string = "Reason why the certificate is revoked"
 const CertificateExpiryDaysDesc string = "Number of days in which the certificate should expire"
+
+// Cred Flags
+const accessKeyDesc string = "Aws credentials access key"
+const AccessKeyAcmDesc = accessKeyDesc + " for the Acm"
+const AccessKeyAcmPcaDesc = accessKeyDesc + "for the Acm Pca"
+
+const secretAccessKeyDesc string = "Aws credentials secret access key"
+const SecretAccessKeyAcmDesc = secretAccessKeyDesc + " for the Acm"
+const SecretAccessKeyAcmPcaDesc = secretAccessKeyDesc + "for the Acm Pca"
+
+const sessionTokenDesc string = "Aws credentials session token"
+const SessionTokenAcmDesc = sessionTokenDesc + " for the Acm"
+const SessionTokenAcmPcaDesc = sessionTokenDesc + "for the Acm Pca"
