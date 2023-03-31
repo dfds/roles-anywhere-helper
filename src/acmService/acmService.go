@@ -10,9 +10,9 @@ import (
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
-func ImportCertificate(profileName, certificateDirectory string) (string, error) {
+func ImportCertificate(profileName, certificateDirectory, region string) (string, error) {
 
-	ctx, cfg := awsService.ConfigureAws(profileName)
+	ctx, cfg := awsService.ConfigureAws(profileName, region)
 
 	svc := acm.NewFromConfig(cfg)
 	println("Importing Certificate")

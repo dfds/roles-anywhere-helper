@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/dfds/roles-anywhere-helper/executableFinder"
+	"github.com/dfds/roles-anywhere-helper/fileHandler"
 	"github.com/dfds/roles-anywhere-helper/profileHandler"
 
 	"gopkg.in/ini.v1"
@@ -27,7 +28,7 @@ func Configure(profileName string, certificatePath string, privateKeyPath string
 	err := executableFinder.CommandExists(awsSignHelpName)
 	Check(err)
 
-	file, err := CreateCredentialsFile(GetCredentialsFilePath())
+	file, err := fileHandler.CreateFile(GetCredentialsFilePath())
 	
 	if err != nil {
 		fmt.Println("Credential file already exists:", err)

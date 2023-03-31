@@ -16,9 +16,9 @@ import (
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
-func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory string, expiryDays int64) (string, error) {
+func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, region string, expiryDays int64) (string, error) {
 
-	ctx, cfg := awsService.ConfigureAws(profileName)
+	ctx, cfg := awsService.ConfigureAws(profileName, region)
 	println("Generating new certificate")
 
 	privateKey, err := certificateHandler.GeneratePrivateKey()
@@ -73,9 +73,9 @@ func GenerateCertificate(profileName, acmpcaArn, commonName, organizationName, o
 	return certArn, nil
 }
 
-func RevokeCertificate(profileName, certArn, pcaArn, revocationReason string) (string, error) {
+func RevokeCertificate(profileName, certArn, pcaArn, revocationReason, region string) (string, error) {
 
-	ctx, cfg := awsService.ConfigureAws(profileName)
+	ctx, cfg := awsService.ConfigureAws(profileName, region)
 
 	acmSvc := acm.NewFromConfig(cfg)
 
