@@ -32,13 +32,13 @@ jobs:
           go get -u golang.org/x/lint/golint
         
       - name: Run build
-        run: go build .
+        run: go build ./src
       
       - name: Run vet & lint
         run: |
-          go vet .
-          golint .
+          go vet ./src
+          golint ./src
     
       - name: Run testing
-        run: go test -v
+        run: cd src && go test -v
     
