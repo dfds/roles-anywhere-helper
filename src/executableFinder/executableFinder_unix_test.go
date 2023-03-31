@@ -17,7 +17,7 @@ func createFakeExecutableUnix(filePath string) error {
 		return err
 	}
 	fakeExecFile.Close()
-	
+
 	err = os.Chmod(fakeExecFile.Name(), 0111)
 	if err != nil {
 		return err

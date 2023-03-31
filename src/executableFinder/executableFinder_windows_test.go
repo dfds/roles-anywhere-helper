@@ -14,7 +14,7 @@ import (
 func createFakeExecWin(dir, fileName string) error {
 	var winExecExt = ".exe"
 	fileName = fileName + winExecExt
-	
+
 	fakeExecFile, err := os.Create(filepath.Join(dir, fileName))
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func TestCommandExists_CommandInPath(t *testing.T) {
 		var commandToCheck string = "test_command"
 		fakeExecFileNames := []string{commandToCheck}
 		prepareFakePathEnv(t, fakeExecFileNames, createFakeExecWin)
-		
+
 		err := CommandExists(commandToCheck)
 		assert.NoError(t, err)
 		assert.Nil(t, err)
