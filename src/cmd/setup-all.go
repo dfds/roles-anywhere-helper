@@ -18,7 +18,7 @@ var setupAllCmd = getSetupAllCmd()
 func getSetupAllCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "setup-all",
-		Short: "Generate certificate, Import Certificate, Configure Credentials",
+		Short: "Generate certificate, import it to ACm and configure credentials",
 		Long: `Setup the whole process of configuring AWS IAM Roles Anywhere.
 		List of operations:
 			- Generates certificate and issues that in AWS ACM PCA.

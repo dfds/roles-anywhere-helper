@@ -11,7 +11,7 @@ import (
 
 var rotateCertificateCmd = &cobra.Command{
 	Use:   "rotate-certificate",
-	Short: "rotate certificate",
+	Short: "Rotate certificate",
 	Long:  `Rotates the certificate by first creating the new certificate then revokeing the old certificate`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileNameAcm, _ := cmd.Flags().GetString(flags.ProfileNameAcm)
