@@ -3,7 +3,7 @@ package credentialService
 import (
 	"fmt"
 	"os"
-	"path/filepath"
+	"path"
 
 	"github.com/dfds/roles-anywhere-helper/executableFinder"
 	"github.com/dfds/roles-anywhere-helper/fileHandler"
@@ -15,7 +15,7 @@ import (
 const awsSignHelpName = "aws_signing_helper"
 const awsCredDir = "/.aws/credentials"
 
-var CredentialsFilePath = GetCredentialsFilePath()
+var CredentialsFilePath = path.Join(GetDefaultCredentialsFilePath(), awsCredDir)
 
 type CredentialsFileTemplate struct {
 	CredentialProcess string `ini:"credential_process,omitempty"`
@@ -28,8 +28,8 @@ func Configure(profileName string, certificatePath string, privateKeyPath string
 	err := executableFinder.CommandExists(awsSignHelpName)
 	Check(err)
 
-	file, err := fileHandler.CreateFile(GetCredentialsFilePath())
-	
+	file, err := fileHandler.CreateFile(GetDefaultCredentialsFilePath(), awsCredDir)
+
 	if err != nil {
 		fmt.Println("Credential file already exists:", err)
 	} else {
@@ -42,10 +42,10 @@ func Configure(profileName string, certificatePath string, privateKeyPath string
 	fmt.Printf("Profile %s set", profileName)
 }
 
-func GetCredentialsFilePath() string {
+func GetDefaultCredentialsFilePath() string {
 	homeDir, err := os.UserHomeDir()
 	Check(err)
-	return filepath.Join(homeDir, awsCredDir)
+	return homeDir
 }
 
 func ProcessCredentialProcessTemplate(certificatePath string, privateKeyPath string, trustAnchorArn string, profileArn string, roleArn string, region string) CredentialsFileTemplate {

@@ -13,8 +13,8 @@ func TestGetCredentialsFilePath(t *testing.T) {
 	if err != nil {
 		t.Fatal("No access to 'HOME' directory: ", err)
 	}
-	expected := filepath.Join(home, ".aws/credentials")
-	actual := GetCredentialsFilePath()
+	expected := home
+	actual := GetDefaultCredentialsFilePath()
 	assert.Equal(t, expected, actual)
 }
 
