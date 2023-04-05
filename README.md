@@ -29,7 +29,7 @@ Available Commands:
 
 ### Installation
 - Download the binary for your target platform from
-  the [releases page](https://github.com/dfds/iam-anywhere-helper/releases)
+  the [releases page](https://github.com/dfds/roles-anywhere-helper/releases)
 
 ### Usage
 
