@@ -52,9 +52,9 @@ func setupAllCmdRun(cmd *cobra.Command, args []string) {
 	profileArn, _ := cmd.Flags().GetString(flags.ProfileArn)
 	roleArn, _ := cmd.Flags().GetString(flags.RoleArn)
 	profileNameRoles, _ := cmd.Flags().GetString(flags.ProfileNameRolesAnywhere)
-	rolesAnywhereRegion, _ := cmd.Flags().GetString(flags.RegionNameRolesAnywhereDesc)
-	pcaRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmPcaDesc)
-	acmRegion, _ := cmd.Flags().GetString(flags.RegionNameAcmDesc)
+	rolesAnywhereRegion, _ := cmd.Flags().GetString(flags.RolesAnywhereRegion)
+	pcaRegion, _ := cmd.Flags().GetString(flags.PcaRegion)
+	acmRegion, _ := cmd.Flags().GetString(flags.AcmRegion)
 
 	acmAccessKey, _ := cmd.Flags().GetString(flags.AccessKeyAcm)
 	acmSecretAccessKey, _ := cmd.Flags().GetString(flags.SecretAccessKeyAcm)
