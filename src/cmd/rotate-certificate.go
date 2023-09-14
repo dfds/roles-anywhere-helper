@@ -53,7 +53,7 @@ func init() {
 	rootCmd.AddCommand(rotateCertificateCmd)
 	
 	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
-	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcmPCA, "default", flags.ProfNameAcmPcaDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcmPca, "default", flags.ProfNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AccessKeyAcm, "", flags.AccessKeyAcmDesc)
