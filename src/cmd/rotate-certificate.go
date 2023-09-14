@@ -12,7 +12,7 @@ import (
 var rotateCertificateCmd = &cobra.Command{
 	Use:   "rotate-certificate",
 	Short: "Rotate certificate",
-	Long:  `Rotates the certificate by first creating the new certificate then revokeing the old certificate`,
+	Long:  `Rotates the certificate by first creating the new certificate then revoking the old certificate`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profileNameAcm, _ := cmd.Flags().GetString(flags.ProfileNameAcm)
 		profileNamePca, _ := cmd.Flags().GetString(flags.ProfileNameAcmPca)
@@ -51,8 +51,9 @@ var rotateCertificateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(rotateCertificateCmd)
-
-	rotateCertificateCmd.PersistentFlags().String(flags.ProfileName, "default", flags.ProfNameAcmPcaDesc)
+	
+	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcmPca, "default", flags.ProfNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AccessKeyAcm, "", flags.AccessKeyAcmDesc)
