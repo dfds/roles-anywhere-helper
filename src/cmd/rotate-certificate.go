@@ -51,8 +51,9 @@ var rotateCertificateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(rotateCertificateCmd)
-
-	rotateCertificateCmd.PersistentFlags().String(flags.ProfileName, "default", flags.ProfNameAcmPcaDesc)
+	
+	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfileNameAcmDesc)
+	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcmPCA, "default", flags.ProfileNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.PcaRegion, "eu-east-1", flags.RegionNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AccessKeyAcm, "", flags.AccessKeyAcmDesc)
