@@ -32,6 +32,7 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 
 	acmPCA := acmpca.NewFromConfig(cfg)
 
+	// SOMEWHERE HERE THE DEFAULT AWS PROFILE IS OVERWRITTEN
 	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
 		Csr:                     csrPem,
@@ -41,6 +42,8 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 			Value: aws.Int64(expiryDays),
 		},
 	})
+
+	// ABOVE HERE
 	if err != nil {
 		fmt.Println("Failed to issue certificate:", err)
 		return "", err

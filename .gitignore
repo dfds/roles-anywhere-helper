@@ -21,3 +21,5 @@ dist/
 *.key
 
 roles-anywhere-helper
+
+/bin
