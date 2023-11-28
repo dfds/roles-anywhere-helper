@@ -7,10 +7,14 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/acm"
 	"github.com/dfds/roles-anywhere-helper/awsService"
+	"github.com/dfds/roles-anywhere-helper/credentialService"
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
 func ImportCertificate(creds awsService.AwsCredentialsObject, certificateDirectory, region string) (string, error) {
+
+	// Load default config section before it gets overwritten
+	defaultConfigSection := credentialService.LoadSection("default")
 
 	ctx, cfg := awsService.ConfigureAws(creds, region)
 
@@ -37,6 +41,14 @@ func ImportCertificate(creds awsService.AwsCredentialsObject, certificateDirecto
 	}
 
 	result, err := svc.ImportCertificate(ctx, input)
+
+	// Set the default profile back to the original
+	var template credentialService.CredentialsFileTemplate
+	template.CredentialProcess = fmt.Sprint(defaultConfigSection.Key("credential_process"))
+	template.Region = fmt.Sprint(defaultConfigSection.Key("region"))
+	credentialService.RecreateSection(&template, "default", credentialService.GetIniFile())
+	credentialService.WriteIniFile(&template, "default")
+
 	if err != nil {
 		return "", fmt.Errorf("importing certificate error: %w", err)
 	}

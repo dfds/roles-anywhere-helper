@@ -42,16 +42,16 @@ var rotateCertificateCmd = &cobra.Command{
 
 		_, err := acmpcaService.GenerateCertificate(acmPcaCreds, acmpcaArn, commonName, organizationName, organizationalUnit, country, locality, province, certificateDirectory, pcaRegion, expiryDays)
 		cobra.CheckErr(err)
-		_, err = acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion)
+		_, err = acmService.ImportCertificate(acmCreds, certificateDirectory, acmRegion) // To JS - Should this be using default profile?
 		cobra.CheckErr(err)
-		_, err = acmpcaService.RevokeCertificate(acmPcaCreds, certArn, acmpcaArn, revocationReasons.Superseded, pcaRegion)
+		_, err = acmpcaService.RevokeCertificate(acmCreds, acmPcaCreds, certArn, acmpcaArn, revocationReasons.Superseded, acmRegion, pcaRegion)
 		cobra.CheckErr(err)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(rotateCertificateCmd)
-	
+
 	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcm, "default", flags.ProfNameAcmDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.ProfileNameAcmPca, "default", flags.ProfNameAcmPcaDesc)
 	rotateCertificateCmd.PersistentFlags().String(flags.AcmRegion, "eu-east-1", flags.RegionNameAcmDesc)

@@ -1,7 +1,6 @@
 package acmpcaService
 
 import (
-	"context"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
@@ -13,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
 	"github.com/dfds/roles-anywhere-helper/awsService"
 	"github.com/dfds/roles-anywhere-helper/certificateHandler"
+	"github.com/dfds/roles-anywhere-helper/credentialService"
 	"github.com/dfds/roles-anywhere-helper/fileNames"
 )
 
@@ -32,7 +32,9 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 
 	acmPCA := acmpca.NewFromConfig(cfg)
 
-	// SOMEWHERE HERE THE DEFAULT AWS PROFILE IS OVERWRITTEN
+	// Load the default profile so we can save it back later
+	defaultConfigSection := credentialService.LoadSection("default")
+
 	certResp, err := acmPCA.IssueCertificate(ctx, &acmpca.IssueCertificateInput{
 		CertificateAuthorityArn: aws.String(acmpcaArn),
 		Csr:                     csrPem,
@@ -43,11 +45,17 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 		},
 	})
 
-	// ABOVE HERE
 	if err != nil {
 		fmt.Println("Failed to issue certificate:", err)
 		return "", err
 	}
+
+	// Set the default profile back to the original
+	var template credentialService.CredentialsFileTemplate
+	template.CredentialProcess = fmt.Sprint(defaultConfigSection.Key("credential_process"))
+	template.Region = fmt.Sprint(defaultConfigSection.Key("region"))
+	credentialService.RecreateSection(&template, "default", credentialService.GetIniFile())
+	credentialService.WriteIniFile(&template, "default")
 
 	waiter := acmpca.NewCertificateIssuedWaiter(acmPCA)
 
@@ -76,19 +84,30 @@ func GenerateCertificate(creds awsService.AwsCredentialsObject, acmpcaArn, commo
 	return certArn, nil
 }
 
-func RevokeCertificate(creds awsService.AwsCredentialsObject, certArn, pcaArn, revocationReason, region string) (string, error) {
+func RevokeCertificate(acmCreds awsService.AwsCredentialsObject, pcaCreds awsService.AwsCredentialsObject, certArn, pcaArn, revocationReason, acmRegion, pcaRegion string) (string, error) {
 
-	ctx, cfg := awsService.ConfigureAws(creds, region)
+	// Load the default profile so we can save it back later
+	defaultConfigSection := credentialService.LoadSection("default")
 
-	acmSvc := acm.NewFromConfig(cfg)
+	acmCtx, acmCfg := awsService.ConfigureAws(acmCreds, acmRegion)
+	acmSvc := acm.NewFromConfig(acmCfg)
 
-	certData, err := acmSvc.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
+	pcaCtx, pcaCfg := awsService.ConfigureAws(pcaCreds, pcaRegion)
+	pcaSvc := acmpca.NewFromConfig(pcaCfg)
+
+	certData, err := acmSvc.DescribeCertificate(acmCtx, &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
+
+	// Set the default profile back to the original
+	var template credentialService.CredentialsFileTemplate
+	template.CredentialProcess = fmt.Sprint(defaultConfigSection.Key("credential_process"))
+	template.Region = fmt.Sprint(defaultConfigSection.Key("region"))
+	credentialService.RecreateSection(&template, "default", credentialService.GetIniFile())
+	credentialService.WriteIniFile(&template, "default")
+
 	if err != nil {
 		fmt.Println(err)
 		return "", err
 	}
-
-	svc := acmpca.NewFromConfig(cfg)
 
 	rci := &acmpca.RevokeCertificateInput{
 		CertificateAuthorityArn: aws.String(pcaArn),
@@ -96,7 +115,7 @@ func RevokeCertificate(creds awsService.AwsCredentialsObject, certArn, pcaArn, r
 		RevocationReason:        types.RevocationReason(revocationReason),
 	}
 
-	_, err = svc.RevokeCertificate(ctx, rci)
+	_, err = pcaSvc.RevokeCertificate(pcaCtx, rci)
 	if err != nil {
 		fmt.Println(err.Error())
 		return "", err

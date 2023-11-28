@@ -78,11 +78,24 @@ func CreateCredentialsFile(filePath string) (*os.File, error) {
 	return os.Create(filePath)
 }
 
+func GetIniFile() *ini.File {
+	cfg, err := ini.Load(CredentialsFilePath)
+	Check(err)
+	return cfg
+}
+
 func WriteIniFile(template *CredentialsFileTemplate, profile string) {
 	cfg, err := ini.Load(CredentialsFilePath)
 	Check(err)
 	RecreateSection(template, profile, cfg)
 	cfg.SaveTo(CredentialsFilePath)
+}
+
+func LoadSection(profile string) *ini.Section {
+	cfg, err := ini.Load(CredentialsFilePath)
+	Check(err)
+	section := cfg.Section(profile)
+	return section
 }
 
 func RecreateSection(template *CredentialsFileTemplate, profile string, cfg *ini.File) {
