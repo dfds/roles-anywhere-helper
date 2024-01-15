@@ -97,13 +97,6 @@ func RevokeCertificate(acmCreds awsService.AwsCredentialsObject, pcaCreds awsSer
 
 	certData, err := acmSvc.DescribeCertificate(acmCtx, &acm.DescribeCertificateInput{CertificateArn: aws.String(certArn)})
 
-	// Set the default profile back to the original
-	var template credentialService.CredentialsFileTemplate
-	template.CredentialProcess = fmt.Sprint(defaultConfigSection.Key("credential_process"))
-	template.Region = fmt.Sprint(defaultConfigSection.Key("region"))
-	credentialService.RecreateSection(&template, "default", credentialService.GetIniFile())
-	credentialService.WriteIniFile(&template, "default")
-
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -116,6 +109,14 @@ func RevokeCertificate(acmCreds awsService.AwsCredentialsObject, pcaCreds awsSer
 	}
 
 	_, err = pcaSvc.RevokeCertificate(pcaCtx, rci)
+
+	// Set the default profile back to the original
+	var template credentialService.CredentialsFileTemplate
+	template.CredentialProcess = fmt.Sprint(defaultConfigSection.Key("credential_process"))
+	template.Region = fmt.Sprint(defaultConfigSection.Key("region"))
+	credentialService.RecreateSection(&template, "default", credentialService.GetIniFile())
+	credentialService.WriteIniFile(&template, "default")
+
 	if err != nil {
 		fmt.Println(err.Error())
 		return "", err

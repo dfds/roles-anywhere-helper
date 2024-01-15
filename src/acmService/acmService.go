@@ -67,3 +67,33 @@ func readFile(directory string, fileName string) ([]byte, error) {
 	}
 	return fileData, nil
 }
+
+func DeleteCertificate(creds awsService.AwsCredentialsObject, certificateArn, region string) (bool, error) {
+
+	defaultConfigSection := credentialService.LoadSection("default")
+
+	ctx, cfg := awsService.ConfigureAws(creds, region)
+
+	svc := acm.NewFromConfig(cfg)
+	println("Deleting Certificate")
+
+	input := &acm.DeleteCertificateInput{
+		CertificateArn: &certificateArn,
+	}
+
+	_, err := svc.DeleteCertificate(ctx, input)
+
+	// Set the default profile back to the original
+	var template credentialService.CredentialsFileTemplate
+	template.CredentialProcess = fmt.Sprint(defaultConfigSection.Key("credential_process"))
+	template.Region = fmt.Sprint(defaultConfigSection.Key("region"))
+	credentialService.RecreateSection(&template, "default", credentialService.GetIniFile())
+	credentialService.WriteIniFile(&template, "default")
+
+	if err != nil {
+		return false, fmt.Errorf("Deleting certificate error: %w", err)
+	}
+
+	return true, nil
+
+}

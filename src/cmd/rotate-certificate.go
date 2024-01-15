@@ -46,6 +46,8 @@ var rotateCertificateCmd = &cobra.Command{
 		cobra.CheckErr(err)
 		_, err = acmpcaService.RevokeCertificate(acmCreds, acmPcaCreds, certArn, acmpcaArn, revocationReasons.Superseded, acmRegion, pcaRegion)
 		cobra.CheckErr(err)
+		_, err = acmService.DeleteCertificate(acmCreds, certArn, acmRegion)
+		cobra.CheckErr(err)
 	},
 }
 

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/dfds/roles-anywhere-helper/acmService"
 	"github.com/dfds/roles-anywhere-helper/acmpcaService"
 	"github.com/dfds/roles-anywhere-helper/argsValidationHandler"
 	"github.com/dfds/roles-anywhere-helper/awsService"
@@ -38,6 +39,8 @@ var revokeCertificateCmd = &cobra.Command{
 		acmCreds := awsService.NewAwsCredentialsObject(acmAccessKey, acmSecretAccessKey, sessionToken, profileNameAcm)
 		acmPcaCreds := awsService.NewAwsCredentialsObject(acmPcaAccessKey, acmPcaSecretAccessKey, sessionToken, profileNameAcmPca)
 		_, err = acmpcaService.RevokeCertificate(acmCreds, acmPcaCreds, certArn, pcaArn, revocationReason, acmRegion, pcaRegion)
+		cobra.CheckErr(err)
+		_, err = acmService.DeleteCertificate(acmCreds, certArn, acmRegion)
 		cobra.CheckErr(err)
 
 	},
